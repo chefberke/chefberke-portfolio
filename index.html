@@ -1,7 +1,66 @@
+<!DOCTYPE html>
+<html>
 <head>
+    <title>Countdown Timer</title>
 
-<p>
-  TEST 
-</p>
-  
+<script>
+const targetDate = new Date();
+targetDate.setDate(targetDate.getDate() + 60);
+targetDate.setHours(0, 0, 0, 0);
+
+const countdownInterval = setInterval(updateCountdown, 1000);
+
+function updateCountdown() {
+    const currentDate = new Date().getTime();
+    const timeLeft = targetDate - currentDate;
+
+    if (timeLeft <= 0) {
+        clearInterval(countdownInterval); 
+        document.getElementById("countdown").innerHTML = "Countdown expired!";
+    } else {
+        const days = Math.floor(timeLeft / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((timeLeft % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((timeLeft % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((timeLeft % (1000 * 60)) / 1000);
+
+        document.getElementById("days").textContent = days;
+        document.getElementById("hours").textContent = hours;
+        document.getElementById("minutes").textContent = minutes;
+        document.getElementById("seconds").textContent = seconds;
+    }
+}
+</script>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Teko:wght@600&display=swap');
+
+
+body,
+html {
+  font-family: 'Teko', sans-serif;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: #333;
+}
+
+#countdown {
+  color: #fff;
+  font-size: 30px;
+}
+
+</style>
+    
 </head>
+<body>
+    <div id="countdown">
+        <span id="days"></span> days
+        <span id="hours"></span> hours
+        <span id="minutes"></span> minutes
+        <span id="seconds"></span> seconds
+    </div>
+</body>
+</html>
