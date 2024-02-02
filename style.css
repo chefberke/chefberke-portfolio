@@ -1,0 +1,282 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;700&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  transition: all 0.25s ease-out;
+}
+
+body {
+  width: 100%;
+  height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background-color: #fff;
+  color: #333;
+}
+
+/*
+*/
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: 96%;
+}
+
+.profile .picture img {
+  width: 40%;
+}
+
+.hiring p span {
+  color: rgb(88, 196, 88);
+}
+
+.hiring {
+  border: 1px solid #333;
+  border-radius: 20px;
+  padding: 0.2rem 0.8rem;
+}
+
+.hiring p {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-weight: 400;
+  font-size: 0.9rem;
+}
+
+.description p {
+  font-weight: 500;
+  font-size: 1.1rem;
+  padding: 0.2rem;
+}
+
+.profile,
+.picture {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.card {
+  --border-radius: 0.75rem;
+  --primary-color: #7257fa;
+  --secondary-color: #3c3852;
+  width: 210px;
+  font-family: "Arial";
+  padding: 1rem;
+  border-radius: var(--border-radius);
+  background: #f1f1f3;
+  box-shadow: 0px 8px 16px 0px rgb(0 0 0 / 3%);
+  position: absolute;
+  top: 20px;
+  left: 20px;
+}
+
+.card > * + * {
+  margin-top: 1.1em;
+}
+
+.card .card__content {
+  color: var(--secondary-color);
+  font-size: 0.86rem;
+}
+
+.card .card__title {
+  padding: 0;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+.card .card__date {
+  color: #6e6b80;
+  font-size: 0.8rem;
+}
+
+.card {
+  /* ... your existing styles ... */
+  transition: opacity 20s ease-out;
+}
+
+/* Remove the .none class */
+
+/* Add a new class to handle opacity transition */
+.card-hidden {
+  opacity: 0;
+}
+
+.social-medias {
+  display: flex;
+  padding-top: 1rem;
+  gap: 1.4rem;
+  width: 25%;
+}
+
+.social-medias div {
+  height: 100%;
+  width: 100%;
+}
+
+.social-medias div img {
+  display: flex;
+  align-items: center;
+  padding: 0.2rem;
+  opacity: 0.8;
+}
+.description p:last-child {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.social-medias div:hover {
+  transition: scale 5s ease;
+  background-color: #dedede;
+  border-radius: 10px;
+  scale: 1.2;
+}
+
+.description p {
+  text-align: center;
+}
+
+.about-me {
+  width: 55%;
+  height: 100%;
+}
+
+.about-me p {
+  font-size: 14px;
+  text-align: center;
+}
+
+/*
+*/
+
+.dark-mode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 40px;
+  height: 40px;
+  background-color: #f1f1f3;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.moon,
+.sun {
+  display: flex;
+  align-items: center;
+  width: 50%;
+}
+
+.moon:hover,
+.sun:hover {
+  animation: oyana 2s infinite;
+}
+
+.none {
+  display: none;
+}
+
+.copyright {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.copyright p {
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+@keyframes oyana {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/*
+dark theme styles
+*/
+
+.dark {
+  background-color: #1a1a1a;
+  color: #fff;
+}
+
+.dark .card {
+  background-color: #333;
+}
+
+.dark .card .card__content {
+  color: #eaeaea;
+}
+
+.dark .card .card__date {
+  color: #d0d0d0;
+}
+
+.dark .hiring {
+  border: 1px solid #c9c9c9;
+}
+
+.dark .description p:last-child {
+  color: #a3a3a3;
+}
+
+.dark .about-me p {
+  color: #a3a3a3;
+}
+
+.dark .hiring {
+  background-color: #1c3226;
+  color: #14c970;
+  border: none;
+}
+
+.dark .hiring span {
+  font-size: 1.1rem;
+}
+
+.dark .social-medias div img:hover {
+  transition: scale 5s ease;
+  background-color: #333;
+  border-radius: 10px;
+  scale: 1.2;
+}
+
+.dark .dark-mode {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 20px;
+  top: 20px;
+  width: 40px;
+  height: 40px;
+  background-color: #333;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+@keyframes rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
