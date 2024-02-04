@@ -115,7 +115,7 @@ body {
   display: flex;
   padding-top: 1rem;
   gap: 1.4rem;
-  width: 25%;
+  width: 220px;
 }
 
 .social-medias div {
@@ -132,6 +132,7 @@ body {
 .description p:last-child {
   font-size: 0.9rem;
   font-weight: 500;
+  width: 100%;
 }
 
 .social-medias div:hover {
@@ -146,7 +147,7 @@ body {
 }
 
 .about-me {
-  width: 55%;
+  width: 60%;
   height: 100%;
 }
 
@@ -278,5 +279,18 @@ dark theme styles
   }
   100% {
     transform: rotate(360deg);
+  }
+}
+
+@media (max-width: 760px) {
+  .about-me {
+    width: 70%;
+    height: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .about-me {
+    width: 80%;
   }
 }
