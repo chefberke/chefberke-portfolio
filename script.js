@@ -58,6 +58,8 @@ function toggleTheme() {
 document.addEventListener("DOMContentLoaded", updateTheme);
 darkTheme.addEventListener("click", toggleTheme);
 
+
+
 // xd
 console.warn(
   "probably someone is looking for the codes / sanırım kodları arıyorsun?!"
