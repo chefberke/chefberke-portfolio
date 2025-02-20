@@ -2,6 +2,7 @@ import React from "react";
 import CvButton from "@/components/cv-button";
 import Image from "next/image";
 import Avatar from "../public/chefberke2.png";
+import GithubCal from "@/components/github-calendar";
 
 function About() {
   return (
@@ -36,6 +37,9 @@ function About() {
       </div>
       <div className="pt-5">
         <CvButton />
+      </div>
+      <div className="pt-7">
+        <GithubCal />
       </div>
     </div>
   );
