@@ -2,7 +2,6 @@ import React from "react";
 import CvButton from "@/components/cv-button";
 import Image from "next/image";
 import Avatar from "../public/chefberke2.png";
-import GithubCal from "@/components/github-calendar";
 
 function About() {
   return (
