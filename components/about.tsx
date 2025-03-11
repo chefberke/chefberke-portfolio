@@ -38,9 +38,9 @@ function About() {
       <div className="pt-5">
         <CvButton />
       </div>
-      <div className="pt-7">
+      {/* <div className="pt-7">
         <GithubCal />
-      </div>
+      </div> */}
     </div>
   );
 }
