@@ -65,7 +65,7 @@ function Projects() {
         {projects.map((project, index) => (
           <div
             key={index}
-            className="w-full bg-neutral-900/30 rounded-lg p-6 hover:bg-neutral-900/50 transition-all flex flex-col h-full"
+            className="w-full bg-neutral-900/10 rounded-lg p-6 hover:bg-neutral-900/30 transition-all flex flex-col h-full"
           >
             <div className="relative w-full h-48 mb-4 flex-shrink-0">
               <img

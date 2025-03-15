@@ -17,6 +17,12 @@ function Navbar() {
         projects
       </Link>
       <Link
+        href={"/skills"}
+        className="hover:opacity-85 transition-all hover:cursor-pointer select-none"
+      >
+        skills
+      </Link>
+      <Link
         href={"/setup"}
         className="hover:opacity-85 transition-all hover:cursor-pointer select-none"
       >

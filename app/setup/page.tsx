@@ -44,7 +44,7 @@ function Setup() {
           {equipment.map((item, index) => (
             <div
               key={index}
-              className="bg-neutral-900/30 rounded-lg p-4 hover:bg-neutral-900/50 transition-all"
+              className="bg-neutral-900/10 rounded-lg p-4 hover:bg-neutral-900/30 transition-all"
             >
               <h4 className="font-medium text-white mb-1">{item.name}</h4>
               <p className="text-sm text-neutral-400 mb-2">{item.specs}</p>
