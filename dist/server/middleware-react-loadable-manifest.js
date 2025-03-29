@@ -1,0 +1,1 @@
+self.__REACT_LOADABLE_MANIFEST="{\"components/footer.tsx -> @/components/live-clock\":{\"id\":\"components/footer.tsx -> @/components/live-clock\",\"files\":[\"static/chunks/_app-pages-browser_components_live-clock_tsx.js\"]}}"

@@ -34,20 +34,20 @@ function Projects() {
       github: "https://github.com/lumi-work/git.cow",
       liveDemo: "https://git-cow.vercel.app",
     },
-    {
-      title: "Lumi UI",
-      alt: "ui component library",
-      imageLink: "/lumi-ui.png",
-      description: `
-        A modern and customizable UI component library for React and Next.js projects. Offers reusable components built with performance and accessibility in mind, designed for easy integration with minimal setup.
-      `,
-      github: "https://github.com/lumi-work/lumi.ui",
-      liveDemo: "https://github.com/lumi-work/lumi.ui",
-    },
+    // {
+    //   title: "Lumi UI",
+    //   alt: "ui component library",
+    //   imageLink: "/lumi-ui.png",
+    //   description: `
+    //     A modern and customizable UI component library for React and Next.js projects. Offers reusable components built with performance and accessibility in mind, designed for easy integration with minimal setup.
+    //   `,
+    //   github: "https://github.com/lumi-work/lumi.ui",
+    //   liveDemo: "https://github.com/lumi-work/lumi.ui",
+    // },
     {
       title: "Lumi Kanban",
       alt: "kanban board",
-      imageLink: "/lumi-kanban.svg",
+      imageLink: "/lumi-kanban.png",
       description: `
         An intuitive task management tool featuring drag-and-drop functionality and real-time updates. Adapts to different workflows with a dynamic UI, making team collaboration and work organization effortless.
       `,
