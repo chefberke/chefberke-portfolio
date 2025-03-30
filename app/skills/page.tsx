@@ -10,22 +10,22 @@ import {
 } from "react-icons/si";
 
 function Skills() {
-  const skillCategories = [
+const skillCategories = [
     {
       title: "Frontend",
       skills: [
         { name: "TypeScript", icon: SiTypescript, level: 85 },
-        { name: "React", icon: SiReact, level: 80 },
-        { name: "Next.js", icon: SiNextdotjs, level: 85 },
+        { name: "React", icon: SiReact, level: 85 },
+        { name: "Next.js", icon: SiNextdotjs, level: 90 },
         { name: "Tailwind CSS", icon: SiTailwindcss, level: 95 },
       ],
     },
     {
       title: "Backend & Database",
       skills: [
-        { name: "Node.js", icon: SiNodedotjs, level: 65 },
+        { name: "Node.js", icon: SiNodedotjs, level: 70 },
         { name: "MongoDB", icon: SiMongodb, level: 60 },
-        { name: "Supabase", icon: SiSupabase, level: 90 },
+        { name: "Supabase", icon: SiSupabase, level: 85 },
       ],
     },
   ];
