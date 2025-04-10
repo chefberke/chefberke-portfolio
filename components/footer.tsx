@@ -36,6 +36,16 @@ function Footer() {
           <MdOutlineArrowOutward />
           twitch
         </a>
+        <a
+          href={
+            "https://open.spotify.com/user/wt6gikfuit28nmqznu2noo3as?si=3f1434802e6246ac"
+          }
+          target="_blank"
+          className="flex items-center gap-1 hover:opacity-90 transition-all"
+        >
+          <MdOutlineArrowOutward />
+          spotify
+        </a>
       </div>
       <div className="flex items-center gap-4 pt-6">
         <div>
