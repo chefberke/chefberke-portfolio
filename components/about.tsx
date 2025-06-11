@@ -26,12 +26,10 @@ function About() {
           </div>
         </div>
         <p className="font-light text-gray-200 pt-7">
-          Hi, I&apos;m Berke Kanber, a passionate software developer based in
-          İzmir, Turkey. Currently, I&apos;m pursuing my second year in Computer
-          Programming at İzmir University of Economics . I love exploring and
-          working with a variety of tools and technologies to build seamless and
-          impactful user experiences. My goal is to continuously grow as a
-          developer while creating innovative solutions that make a difference.
+          Hi, I&apos;m Berke Kanber, a passionate Software Developer based in İzmir, Turkiye. I build scalable, efficient, and user-focused applications using technologies like React, Next.js, Node.js, and Express.
+
+I enjoy exploring new tools to create seamless user experiences and solving real-world problems with clean, maintainable code.
+
         </p>
       </div>
       <div className="pt-5">
