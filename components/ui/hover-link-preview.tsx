@@ -2,6 +2,7 @@
 
 import * as React from "react";
 import { useRef, useState } from "react";
+import Image from "next/image";
 import {
   motion,
   AnimatePresence,
@@ -95,10 +96,12 @@ const HoverLinkPreview: React.FC<HoverLinkPreviewProps> = ({
             }}
           >
             <div className="bg-white border rounded-2xl shadow-lg p-2 min-w-[180px] max-w-xs">
-              <img
+              <Image
                 src={previewImage}
                 alt={imageAlt}
                 draggable={false}
+                width={192}
+                height={112}
                 className="w-48 h-28 object-cover rounded-md"
               />
             </div>
