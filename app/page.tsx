@@ -11,10 +11,10 @@ import Footer from "@/components/shared/footer";
 export default function Home() {
   return (
     <div>
-      <div className="flex items-center justify-center h-full py-36 relative">
-        <div className="absolute left-1/2 top-0 bottom-0 -translate-x-[320px] w-px border-l-2 border-dotted border-gray-200 dark:border-gray-600"></div>
+      <div className="flex items-center justify-center h-full py-12 md:py-36 relative px-6 sm:px-8 md:px-12 lg:px-16">
+        <div className="hidden md:block absolute left-1/2 top-0 bottom-0 -translate-x-[320px] w-px border-l-2 border-dotted border-gray-200 dark:border-gray-600"></div>
 
-        <div className="absolute right-1/2 top-0 bottom-0 translate-x-[320px] w-px border-r-2 border-dotted border-gray-200 dark:border-gray-600"></div>
+        <div className="hidden md:block absolute right-1/2 top-0 bottom-0 translate-x-[320px] w-px border-r-2 border-dotted border-gray-200 dark:border-gray-600"></div>
 
         <div className="flex flex-col items-center justify-center w-full max-w-xl h-full relative z-10">
           <AboutUpper />

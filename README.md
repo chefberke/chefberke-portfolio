@@ -1,36 +1,136 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# berkekanber.com 🚀
 
-## Getting Started
+[![Next.js](https://img.shields.io/badge/Next.js-15.3.4-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
+[![React](https://img.shields.io/badge/React-19.0.0-61DAFB?style=for-the-badge&logo=react)](https://reactjs.org/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.0-3178C6?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-38B2AC?style=for-the-badge&logo=tailwind-css)](https://tailwindcss.com/)
+[![Framer Motion](https://img.shields.io/badge/Framer_Motion-12.19.2-FF0055?style=for-the-badge&logo=framer)](https://www.framer.com/motion/)
 
-First, run the development server:
+## 👋 About
+
+Personal portfolio website of Berke Kanber - A Software Developer showcasing projects, experience, and skills. Built with modern web technologies for optimal performance and user experience.
+
+### ✨ Features
+
+- **Responsive Design** - Fully responsive layout that works on all devices
+- **Modern UI/UX** - Clean and minimalist design with smooth animations
+- **Fast Performance** - Optimized with Next.js for lightning-fast page loads
+- **SEO Optimized** - Built-in SEO features with sitemap and robots.txt
+- **Type Safe** - Written in TypeScript for better developer experience
+
+## 🛠️ Tech Stack
+
+- **Framework:** [Next.js 15](https://nextjs.org/)
+- **Language:** [TypeScript](https://www.typescriptlang.org/)
+- **Styling:** [Tailwind CSS v4](https://tailwindcss.com/)
+- **Animations:** [Framer Motion](https://www.framer.com/motion/)
+- **UI Components:** Custom components with Radix UI
+- **Icons:** [Lucide React](https://lucide.dev/)
+- **Package Manager:** [Bun](https://bun.sh/)
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+Make sure you have the following installed:
+
+- Node.js 18+ or Bun
+- Git
+
+### Installation
+
+1. Clone the repository:
 
 ```bash
+git clone https://github.com/yourusername/berkekanber.com.git
+cd berkekanber.com
+```
+
+2. Install dependencies:
+
+```bash
+bun install
+# or
+npm install
+# or
+yarn install
+```
+
+3. Run the development server:
+
+```bash
+bun dev
+# or
 npm run dev
 # or
 yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Building for Production
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+bun run build
+# or
+npm run build
+# or
+yarn build
+```
 
-## Learn More
+### Start Production Server
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+bun start
+# or
+npm start
+# or
+yarn start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📁 Project Structure
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```
+berkekanber.com/
+├── app/                  # Next.js app directory
+│   ├── api/             # API routes
+│   ├── layout.tsx       # Root layout
+│   └── page.tsx         # Home page
+├── components/          # React components
+│   ├── shared/         # Shared components (About, Projects, etc.)
+│   └── ui/             # UI components
+├── public/             # Static assets
+├── styles/             # Global styles
+└── lib/               # Utility functions
+```
 
-## Deploy on Vercel
+## 📄 Sections
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **About** - Personal introduction and overview
+- **Projects** - Showcase of featured projects
+- **Experience** - Professional work experience
+- **Education** - Academic background
+- **Tech Stack** - Technologies and tools
+- **Languages** - Programming languages proficiency
+- **Contact** - Get in touch information
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🎨 Customization
+
+To customize the portfolio for your own use:
+
+1. Update personal information in `components/shared/` files
+2. Replace images in the `public/` directory
+3. Modify the color scheme in `tailwind.config.js`
+4. Update metadata in `app/layout.tsx`
+
+## 📝 License
+
+This project is open source and available under the [MIT License](LICENSE).
+
+## 🤝 Contact
+
+Berke Kanber - [Portfolio](https://berkekanber.com)
+
+---
+
+<p align="center">Made with ❤️ using Next.js</p>
