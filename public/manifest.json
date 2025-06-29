@@ -1,0 +1,24 @@
+{
+  "name": "Berke Kanber - Software Developer Portfolio",
+  "short_name": "Berke Kanber",
+  "description": "Berke Kanber - İzmir merkezli Software Developer. React, Next.js, Node.js ve React Native teknolojileriyle modern uygulamalar geliştiriyorum.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/chefberke.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/chefberke.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}
