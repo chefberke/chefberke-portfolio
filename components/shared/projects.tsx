@@ -5,21 +5,21 @@ import { HoverLinkPreview } from "../ui/hover-link-preview";
 
 function Projects() {
   const projects = [
-    {
-      title: "git.cow",
-      description:
-        "A developer tool for analyzing GitHub activity and project metrics. Visualizes repositories, commits, and contributions through intuitive graphs, helping users track their open-source engagement effectively.",
-      technologies: [
-        "Next.js",
-        "TypeScript",
-        "Motion",
-        "Tailwind CSS",
-        "Supabase",
-      ],
-      githubUrl: "",
-      liveUrl: "https://git-cow.vercel.app",
-      previewImage: "/git-cow.svg",
-    },
+    // {
+    //   title: "git.cow",
+    //   description:
+    //     "A developer tool for analyzing GitHub activity and project metrics. Visualizes repositories, commits, and contributions through intuitive graphs, helping users track their open-source engagement effectively.",
+    //   technologies: [
+    //     "Next.js",
+    //     "TypeScript",
+    //     "Motion",
+    //     "Tailwind CSS",
+    //     "Supabase",
+    //   ],
+    //   githubUrl: "",
+    //   liveUrl: "https://git-cow.vercel.app",
+    //   previewImage: "/git-cow.svg",
+    // },
     {
       title: "Gitcord",
       description:
@@ -35,6 +35,22 @@ function Projects() {
       githubUrl: "https://github.com/lumi-work/gitcord",
       liveUrl: "https://gitcord.pro",
       previewImage: "/gitcord.png",
+    },
+    {
+      title: "Lumi",
+      description:
+        "An intuitive task management tool featuring drag-and-drop functionality and real-time updates. Adapts to different workflows with a dynamic UI, making team collaboration and work organization effortless.",
+      technologies: [
+        "Next.js",
+        "Next.js API Routes",
+        "TypeScript",
+        "Socket IO",
+        "Tailwind CSS",
+        "MongoDB",
+      ],
+      githubUrl: "https://github.com/lumi-work/lumi-board",
+      liveUrl: "https://lumi-board.vercel.app",
+      previewImage: "/lumi-kanban.png",
     },
     {
       title: "Spotiwrap",
@@ -53,22 +69,6 @@ function Projects() {
       githubUrl: "https://github.com/chefberke/universite-degerlendir",
       liveUrl: "https://universite-degerlendir.vercel.app",
       previewImage: "/unidegerlendir.svg",
-    },
-    {
-      title: "Lumi Board",
-      description:
-        "An intuitive task management tool featuring drag-and-drop functionality and real-time updates. Adapts to different workflows with a dynamic UI, making team collaboration and work organization effortless.",
-      technologies: [
-        "Next.js",
-        "Next.js API Routes",
-        "TypeScript",
-        "Socket IO",
-        "Tailwind CSS",
-        "MongoDB",
-      ],
-      githubUrl: "https://github.com/lumi-work/lumi-board",
-      liveUrl: "https://lumi-board.vercel.app",
-      previewImage: "/lumi-kanban.png",
     },
   ];
 

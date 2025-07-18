@@ -18,18 +18,6 @@ function Contact() {
             </p>
           </div>
           <div className="flex items-center justify-between w-full">
-            <h2 className="text-neutral-700">LinkedIn</h2>
-            <p className="text-neutral-400 hover:text-neutral-800 cursor-pointer transition-all">
-              <Link
-                href="https://www.linkedin.com/in/berkekanber/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                /in/berkekanber
-              </Link>
-            </p>
-          </div>
-          <div className="flex items-center justify-between w-full">
             <h2 className="text-neutral-700">GitHub</h2>
             <p className="text-neutral-400 hover:text-neutral-800 cursor-pointer transition-all">
               <Link
@@ -38,6 +26,18 @@ function Contact() {
                 rel="noopener noreferrer"
               >
                 github.com/chefberke
+              </Link>
+            </p>
+          </div>
+          <div className="flex items-center justify-between w-full">
+            <h2 className="text-neutral-700">LinkedIn</h2>
+            <p className="text-neutral-400 hover:text-neutral-800 cursor-pointer transition-all">
+              <Link
+                href="https://www.linkedin.com/in/berkekanber/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                in/berkekanber
               </Link>
             </p>
           </div>

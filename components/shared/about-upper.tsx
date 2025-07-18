@@ -1,5 +1,6 @@
 import Image from "next/image";
 import React from "react";
+import { BlurFade } from "@/components/ui/blur-fade";
 
 function AboutUpper() {
   return (
@@ -13,10 +14,14 @@ function AboutUpper() {
         />
       </div>
       <div className="pt-2">
-        <h1 className="text-3xl font-bold text-neutral-700">
-          Hey, I&apos;m Berke.
-        </h1>
-        <p className="font-medium text-gray-500 pt-0.5">A Software Developer</p>
+        <BlurFade delay={0.25} inView>
+          <h1 className="text-3xl font-bold text-neutral-700">
+            Hey, I&apos;m Berke.
+          </h1>
+          <p className="font-medium text-gray-500 pt-0.5">
+            A Software Developer
+          </p>
+        </BlurFade>
       </div>
     </div>
   );
