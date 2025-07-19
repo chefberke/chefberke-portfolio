@@ -23,12 +23,11 @@ function Projects() {
     {
       title: "Gitcord",
       description:
-        "A web application that allows developers to monitor and analyze all their GitHub repositories through real-time insights and unified analytics. It provides a centralized dashboard for tracking contributions, commits, stars, and repository performance—helping developers code smarter and make data-driven decisions.",
+        "A centralized dashboard for developers to monitor and analyze GitHub repositories with real-time insights, tracking contributions, commits, and repository performance.",
       technologies: [
         "Next.js",
         "Next.js API Routes",
         "TypeScript",
-        "Motion",
         "Tailwind CSS",
         "MongoDB",
       ],
@@ -39,14 +38,13 @@ function Projects() {
     {
       title: "Lumi",
       description:
-        "An intuitive task management tool featuring drag-and-drop functionality and real-time updates. Adapts to different workflows with a dynamic UI, making team collaboration and work organization effortless.",
+        "A minimalist task management app that helps teams stay organized and productive, with simplicity and seamless collaboration in one place.",
       technologies: [
         "Next.js",
         "Next.js API Routes",
         "TypeScript",
-        "Socket IO",
         "Tailwind CSS",
-        "MongoDB",
+        "PostgreSQL",
       ],
       githubUrl: "https://github.com/lumi-work/lumi-board",
       liveUrl: "https://lumi-board.vercel.app",
@@ -55,7 +53,7 @@ function Projects() {
     {
       title: "Spotiwrap",
       description:
-        "An open-source alternative to Spotify Wrapped that analyzes users' top tracks, artists, and genres. Provides interactive and visually appealing insights into listening habits with optimized performance and seamless API integration.",
+        "An open-source alternative to Spotify Wrapped that analyzes users' listening habits, providing interactive insights into top tracks, artists, and genres.",
       technologies: ["Next.js", "Typescript", "Tailwind CSS", "Supabase"],
       githubUrl: "https://github.com/lumi-work/spotiwrap",
       liveUrl: "https://spoti-wrap.vercel.app",
@@ -64,7 +62,7 @@ function Projects() {
     {
       title: "Üniversite Değerlendir",
       description:
-        "A platform for anonymous rating and reviewing of universities in Turkey. Users can share their experiences through comments and ratings, helping prospective students make informed decisions. Features modern UI/UX and real-time updates.",
+        "A platform for anonymous rating and reviewing of universities in Turkey, helping prospective students make informed decisions through user experiences and ratings.",
       technologies: ["Next.js", "TypeScript", "Tailwind CSS", "Supabase"],
       githubUrl: "https://github.com/chefberke/universite-degerlendir",
       liveUrl: "https://universite-degerlendir.vercel.app",

@@ -10,15 +10,15 @@ function Languages() {
         <div className="flex flex-col items-center justify-center gap-2 w-full">
           <div className="flex items-center justify-between w-full">
             <h2 className="text-neutral-700">Turkish</h2>
-            <p className="text-neutral-400">Native</p>
+            <p className="text-neutral-400 text-sm">Native</p>
           </div>
           <div className="flex items-center justify-between w-full">
             <h2 className="text-neutral-700">English</h2>
-            <p className="text-neutral-400">Intermediate</p>
+            <p className="text-neutral-400 text-sm">Intermediate</p>
           </div>
           <div className="flex items-center justify-between w-full">
             <h2 className="text-neutral-700">Deutsch</h2>
-            <p className="text-neutral-400">Basic</p>
+            <p className="text-neutral-400 text-sm">Basic</p>
           </div>
         </div>
       </div>
