@@ -11,7 +11,7 @@ function Contact() {
         <div className="flex flex-col items-center justify-center gap-2 w-full">
           <div className="flex items-center justify-between w-full">
             <h2 className="text-neutral-700">Email</h2>
-            <p className="text-neutral-400 hover:text-neutral-800 cursor-pointer transition-all">
+            <p className="text-neutral-400 hover:text-neutral-800 cursor-pointer transition-all text-sm">
               <Link href="mailto:berkekanber@gmail.com">
                 berkekanber@gmail.com
               </Link>
@@ -19,7 +19,7 @@ function Contact() {
           </div>
           <div className="flex items-center justify-between w-full">
             <h2 className="text-neutral-700">GitHub</h2>
-            <p className="text-neutral-400 hover:text-neutral-800 cursor-pointer transition-all">
+            <p className="text-neutral-400 hover:text-neutral-800 cursor-pointer transition-all text-sm">
               <Link
                 href="https://github.com/chefberke"
                 target="_blank"
@@ -31,7 +31,7 @@ function Contact() {
           </div>
           <div className="flex items-center justify-between w-full">
             <h2 className="text-neutral-700">LinkedIn</h2>
-            <p className="text-neutral-400 hover:text-neutral-800 cursor-pointer transition-all">
+            <p className="text-neutral-400 hover:text-neutral-800 cursor-pointer transition-all text-sm">
               <Link
                 href="https://www.linkedin.com/in/berkekanber/"
                 target="_blank"
@@ -43,7 +43,7 @@ function Contact() {
           </div>
           <div className="flex items-center justify-between w-full">
             <h2 className="text-neutral-700">Twitter</h2>
-            <p className="text-neutral-400 hover:text-neutral-800 cursor-pointer transition-all">
+            <p className="text-neutral-400 hover:text-neutral-800 cursor-pointer transition-all text-sm">
               <Link
                 href="https://x.com/chef_berke"
                 target="_blank"

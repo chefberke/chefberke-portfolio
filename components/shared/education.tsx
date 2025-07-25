@@ -19,7 +19,7 @@ function Education() {
             />
           </div>
           <div>
-            <div className="text-lg font-medium text-neutral-700">
+            <div className="font-medium text-neutral-700">
               Computer Programming
             </div>
             <div className="text-sm text-gray-500">
@@ -31,7 +31,7 @@ function Education() {
                 >
                   Izmir University of Economics
                 </HoverLinkPreview>{" "}
-                | 2023 - 2025
+                | Sep 2023 - Jun 2025
               </div>
             </div>
           </div>

@@ -18,7 +18,7 @@ function About() {
           problems with clean, maintainable code.
         </p>
       </div>
-      <Button className="mt-4 flex items-center gap-2 bg-neutral-200 text-neutral-700 hover:cursor-pointer hover:bg-neutral-300 transition-all duration-300">
+      <Button className="mt-4 flex items-center gap-2 bg-neutral-100 text-neutral-700 hover:cursor-pointer hover:bg-neutral-200 transition-all duration-300">
         <Link
           href={"/cv.pdf"}
           target="_blank"

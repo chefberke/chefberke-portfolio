@@ -36,7 +36,7 @@ function Projects() {
       previewImage: "/gitcord.png",
     },
     {
-      title: "Lumi",
+      title: "Calira",
       description:
         "A minimalist task management app that helps teams stay organized and productive, with simplicity and seamless collaboration in one place.",
       technologies: [
@@ -46,10 +46,25 @@ function Projects() {
         "Tailwind CSS",
         "PostgreSQL",
       ],
-      githubUrl: "https://github.com/lumi-work/lumi-board",
-      liveUrl: "https://lumi-board.vercel.app",
-      previewImage: "/lumi-kanban.png",
+      githubUrl: "https://github.com/chefberke/calira",
+      liveUrl: "https://calira.me",
+      previewImage: "/calira.png",
     },
+    // {
+    //   title: "Lumi",
+    //   description:
+    //     "A minimalist task management app that helps teams stay organized and productive, with simplicity and seamless collaboration in one place.",
+    //   technologies: [
+    //     "Next.js",
+    //     "Next.js API Routes",
+    //     "TypeScript",
+    //     "Tailwind CSS",
+    //     "PostgreSQL",
+    //   ],
+    //   githubUrl: "https://github.com/lumi-work/lumi-board",
+    //   liveUrl: "https://lumi-board.vercel.app",
+    //   previewImage: "/lumi-kanban.png",
+    // },
     {
       title: "Spotiwrap",
       description:
@@ -87,7 +102,7 @@ function Projects() {
                       previewImage={project.previewImage}
                       imageAlt={`${project.title} preview`}
                     >
-                      <h3 className="text-lg font-medium text-neutral-700 group-hover:text-neutral-900 transition-colors duration-200">
+                      <h3 className="font-medium text-neutral-700 group-hover:text-neutral-900 transition-colors duration-200">
                         {project.title}
                       </h3>
                     </HoverLinkPreview>
@@ -126,7 +141,7 @@ function Projects() {
                   {project.technologies.map((tech, techIndex) => (
                     <span
                       key={techIndex}
-                      className="px-2 py-1 bg-neutral-100 text-neutral-700 text-xs font-medium rounded border border-neutral-200"
+                      className="px-2 py-1 bg-neutral-50 text-neutral-700 text-xs font-medium rounded border border-neutral-100"
                     >
                       {tech}
                     </span>
