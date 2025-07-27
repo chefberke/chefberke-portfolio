@@ -146,13 +146,7 @@ export default function RootLayout({
         {children}
 
         {/* 🔍 Microsoft Clarity Tracking Script */}
-        <Script
-          src="https://cdn.databuddy.cc/databuddy.js"
-          data-client-id="L7rPQ5K8Bs6FcU8Ud3-3h"
-          data-enable-batching="true"
-          crossOrigin="anonymous"
-          async
-        />
+        <Script defer src="https://assets.onedollarstats.com/stonks.js" />
       </body>
     </html>
   );
