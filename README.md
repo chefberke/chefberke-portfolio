@@ -1,20 +1,26 @@
-# Berke Kanber
+﻿# Berke Kanber Portfolio
 
-## Kurulum
+Minimal single-page personal portfolio.
+
+- Experience & projects tabs
+- Animated titles with hand-drawn highlight/underline
+- CV and social links
+
+## Setup
 
 ```bash
 bun install
 bun dev
 ```
 
-Tarayıcı: http://localhost:3000
+Browser: http://localhost:3000
 
-## Özelleştir
+## Customize
 
 - `data/profile.json`
 - `public/images`
 - `public/documents/berke-kanber-cv.pdf`
 
-## Teknoloji
+## Tech
 
 Next.js 16, React 19, Tailwind CSS 4, Framer Motion
