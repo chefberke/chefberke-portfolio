@@ -1,60 +1,99 @@
-"use client";
-
-import { useState } from "react";
 import Image from "next/image";
-import { RefreshCw } from "lucide-react";
-import DeveloperTitle from "@/components/shared/DeveloperTitle";
+import MicroLabel from "@/components/shared/MicroLabel";
+import LocalTime from "@/components/home/LocalTime";
+import Star from "@/components/shared/Star";
 
 type ProfileHeaderProps = {
   name: string;
-  titles: string[];
+  title: string;
+  location: string;
 };
 
-const LOGOS = ["chefberke", "xrew"] as const;
-
-export default function ProfileHeader({ name, titles }: ProfileHeaderProps) {
-  const [logoIndex, setLogoIndex] = useState(0);
-  const currentLogo = LOGOS[logoIndex];
-  const altText =
-    logoIndex === 0
-      ? `${name} profile photo`
-      : `${name} alternate profile photo`;
-
-  const toggleLogo = () => {
-    setLogoIndex((prev) => (prev + 1) % LOGOS.length);
-  };
-
+/**
+ * The top of the page: a two-by-two block.
+ *
+ * The left column says who, the right column says where and when. The micro
+ * labels sit on one line and the values sit under them, so the four cells lock
+ * into a grid without any rules being drawn between them.
+ *
+ * The name is lowercase and set at the same weight as the body text. Nothing on
+ * this page shouts, and a name in the same key as everything around it is a
+ * quieter introduction than a large bold one.
+ *
+ * On load the two columns fill in together, and both do it the same way: the
+ * micro label first, then what it names. The star and the location arrive on
+ * the same beat, so the top of the page reads as one line being written across
+ * before anything is written under it.
+ */
+export default function ProfileHeader({
+  name,
+  title,
+  location,
+}: ProfileHeaderProps) {
   return (
-    <header className="flex gap-4">
-      <div className="relative overflow-hidden rounded-lg">
-        <Image
-          key={currentLogo}
-          src={`/images/${currentLogo}.jpg`}
-          alt={altText}
-          width={80}
-          height={80}
-          className="rounded-lg fade-in"
-          priority
-          onContextMenu={(event) => event.preventDefault()}
-        />
-      </div>
-      <div className="flex flex-col justify-between h-[80px]">
-        <button
-          onClick={toggleLogo}
-          className="cursor-pointer text-neutral-400 hover:text-neutral-100 transition-all duration-300"
-          title="Change logo"
-          type="button"
-        >
-          <RefreshCw size={12} className="text-current" />
-        </button>
-        <div className="flex flex-col items-start">
-          <h1 className="text-[17px] font-semibold tracking-tight text-neutral-100">
-            {name}
-          </h1>
-          <div className="text-[13px] text-neutral-400 leading-tight">
-            <DeveloperTitle titles={titles} />
+    <header className="flex items-start justify-between gap-4">
+      <div className="flex flex-col gap-2">
+        {/* Where the `home` label used to be. It keeps the label's slot and its
+            beat -- first thing in, one step ahead of the photo -- but says it
+            as a mark instead of a word. The height of a micro label is held by
+            the line-box it sits in, so the row below does not move. */}
+        <span className="block-in flex h-[20px] items-center text-link">
+          <Star />
+        </span>
+        <div className="flex items-center gap-3">
+          {/*
+            The only image on the page. It runs taller than the two lines beside
+            it on purpose -- matched to their height it read as an icon rather
+            than as a photograph of a person.
+
+            The hairline around it is the same color as the page frame, so it
+            sits in the layout rather than on top of it. The source is 800px
+            square, so next/image has room for any pixel ratio.
+
+            The photo arrives one step ahead of the name beside it -- the same
+            step every other line on the page uses. Nothing inside it moves on
+            its own; it rises whole, like a line of type.
+          */}
+          <div className="block-in [--stagger-offset:40ms] size-14 shrink-0 overflow-hidden ring-1 ring-rule">
+            <Image
+              src="/images/chefberke.jpg"
+              alt={`${name}, ${title}`}
+              width={56}
+              height={56}
+              // Above Next's default of 75. A face drawn this small has no
+              // detail to spare, and at 75 it came out a 1.2KB webp with the
+              // eyes and the glasses smeared into the skin. 90 roughly doubles
+              // the file, which is nothing on a page with one image on it.
+              // The allowed values are listed in next.config.ts -- Next 16
+              // rejects any quality that is not on that list.
+              quality={90}
+              priority
+              className="size-14"
+            />
+          </div>
+          {/* The name and the role are the block's third and fourth beats. The
+              photo is already up by the time the name lands on it. */}
+          <div className="stagger-in [--stagger-offset:80ms] flex flex-col gap-1.5">
+            {/*
+              The one string on the site set in Geist Pixel Square. A pixel face
+              at 18px next to a page of 14px mono is the whole hierarchy: the
+              name does not need to be bigger or bolder than anything else, it
+              just has to be the only thing drawn on a different grid. The
+              negative tracking pulls the squares back together, since a pixel
+              face sets loose at this size.
+            */}
+            <h1 className="font-pixel text-[18px] lowercase leading-none tracking-[-0.025em] text-primary">
+              {name}
+            </h1>
+            <p className="text-[12px] lowercase leading-none text-faint">
+              {title}
+            </p>
           </div>
         </div>
+      </div>
+      <div className="stagger-in flex flex-col items-end gap-2 text-right">
+        <MicroLabel>{location}</MicroLabel>
+        <LocalTime />
       </div>
     </header>
   );

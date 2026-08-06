@@ -1,4 +1,5 @@
 import { ImageResponse } from "next/og";
+import { tokens } from "@/lib/tokens";
 
 export const size = {
   width: 1200,
@@ -19,36 +20,51 @@ export default function OpenGraphImage() {
           justifyContent: "center",
           alignItems: "flex-start",
           padding: "96px 100px",
-          backgroundColor: "#0a0a0a",
-          color: "#f5f5f5",
-          fontFamily: "Arial, Helvetica, sans-serif",
+          backgroundColor: tokens.surface,
+          color: tokens.primary,
+          // Satori cannot read the vendored Ioskeley woff2, so the card asks
+          // for a monospace face and takes whatever the renderer has. It still
+          // carries the page's colors and its lowercase voice.
+          fontFamily: "monospace",
         }}
       >
         <div
           style={{
-            fontSize: 22,
-            letterSpacing: "1.5px",
-            color: "#9ca3af",
+            fontSize: 24,
+            letterSpacing: "1.2px",
+            textTransform: "uppercase",
+            color: tokens.faint,
           }}
         >
           berkekanber.com
         </div>
         <div
           style={{
-            marginTop: 22,
+            marginTop: 24,
             fontSize: 64,
-            fontWeight: 700,
             lineHeight: 1.1,
-            display: "flex",
-            alignItems: "baseline",
-            gap: 12,
           }}
         >
-          Berke Kanber{" "}
-          <span style={{ fontWeight: 400, color: "#d1d5db" }}>
-            | Software Developer
-          </span>
+          berke kanber
         </div>
+        <div
+          style={{
+            marginTop: 16,
+            fontSize: 30,
+            color: tokens.faint,
+          }}
+        >
+          full stack developer
+        </div>
+        {/* One blue rule, the same accent the page uses for everything live. */}
+        <div
+          style={{
+            marginTop: 40,
+            width: 120,
+            height: 6,
+            backgroundColor: tokens.link,
+          }}
+        />
       </div>
     ),
     {

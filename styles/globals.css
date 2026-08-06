@@ -1,46 +1,322 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/*
+ * Colors are defined in lib/tokens.ts and published as CSS variables by
+ * app/layout.tsx. This file only maps them onto Tailwind utilities, so it holds
+ * no hex values of its own.
+ *
+ * `inline` makes Tailwind emit `var(--surface)` straight into each utility
+ * instead of creating a second custom property, so the utilities resolve
+ * against whatever :root provides.
+ */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --font-mono: var(--font-ioskeley);
+  --font-pixel: var(--font-pixel-square);
+
+  --color-surface: var(--surface);
+  --color-rule: var(--rule);
+  --color-primary: var(--primary);
+  --color-faint: var(--faint);
+  --color-link: var(--link);
+  --color-accent: var(--accent);
+
+  --color-grid-0: var(--grid-0);
+  --color-grid-1: var(--grid-1);
+  --color-grid-2: var(--grid-2);
+  --color-grid-3: var(--grid-3);
+  --color-grid-4: var(--grid-4);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+:root {
+  /* Keeps scrollbars and native controls light, even in a dark-mode browser. */
+  color-scheme: light;
 }
 
+/*
+ * The page is set in mono, top to bottom. Every line on it is a label, a value,
+ * a date, or a count, and a fixed advance width is what keeps those in columns
+ * without a table being drawn around them.
+ *
+ * 14px/1.625 is the one text size the page has. Everything smaller is a micro
+ * label; the only thing larger is the name.
+ */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--surface);
+  color: var(--primary);
+  font-family: var(--font-ioskeley), ui-monospace, SFMono-Regular, monospace;
+  font-size: 14px;
+  line-height: 1.625;
 }
 
 ::selection {
-  background: var(--foreground);
-  color: var(--background);
+  background: var(--accent);
+  color: var(--surface);
 }
 
-@keyframes fadeIn {
+/*
+ * The underline that grows under anything clickable.
+ *
+ * `text-decoration` cannot be animated -- it is either there or it is not --
+ * so the rule is drawn as a one-pixel-tall background image and the animation
+ * runs on `background-size`. It wipes in from the left, then back out again on
+ * leave, which a plain underline can never do.
+ *
+ * Links and tabs share the mechanism, so every clickable thing on the page
+ * answers the pointer the same way. They differ only in where the rule sits and
+ * in whether anything can hold it open.
+ */
+.link-underline,
+.tab-underline {
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  background-size: 0% 1px;
+  transition:
+    background-size 320ms cubic-bezier(0.4, 0, 0.2, 1),
+    color 200ms;
+}
+
+/*
+ * A link's rule hugs its text.
+ *
+ * It is drawn in the accent color rather than in `currentColor`: these links
+ * sit in the faint gray and darken toward black on hover, and a black rule
+ * reads as emphasis where a blue one reads as a link.
+ */
+.link-underline {
+  background-image: linear-gradient(var(--link), var(--link));
+  padding-bottom: 2px;
+}
+
+.link-underline:hover,
+.link-underline:focus-visible {
+  background-size: 100% 1px;
+}
+
+/*
+ * A tab's rule sits lower -- a tab marker belongs under its label, not tight
+ * against it -- and is always the accent color.
+ *
+ * The open tab holds the rule at full width. That state is read straight off
+ * `aria-selected`, so the thing that tells a screen reader which tab is open is
+ * the same thing that draws it, and the two cannot drift apart. It also means
+ * switching tabs animates: the rule wipes off the old tab and onto the new one.
+ */
+.tab-underline {
+  background-image: linear-gradient(var(--link), var(--link));
+  padding-bottom: 8px;
+}
+
+.tab-underline:hover,
+.tab-underline:focus-visible,
+.tab-underline[aria-selected="true"] {
+  background-size: 100% 1px;
+}
+
+/* Someone who asked for less motion gets the underline, just not the wipe. */
+@media (prefers-reduced-motion: reduce) {
+  .link-underline,
+  .tab-underline {
+    transition: none;
+  }
+}
+
+/*
+ * The page's arrival.
+ *
+ * The top hairline draws itself first, out from the left, as if the page were
+ * being ruled before anything was written on it. Then the column fills in --
+ * not block by block, but line by line: a label, then the thing it names, then
+ * the next label. The page assembles itself in the order it is meant to be
+ * read.
+ *
+ * Every step is opacity and transform only. Nothing here moves a box, so no
+ * amount of it can shift the layout while it runs.
+ *
+ * Three things keep that reading as one flow rather than as a set of pops, and
+ * all three are easy to undo by accident:
+ *
+ * The fade and the rise are separate animations on separate clocks -- 240ms
+ * linear against 380ms ease-out-cubic. A fade only looks even if it is even,
+ * and the travel wants a longer, softer curve than the fade does. Put them back
+ * into one keyframe on one ease-out-expo curve and the whole page snaps again.
+ *
+ * The steps are much shorter than the durations. At 40ms against 380ms, a line
+ * is a tenth of the way up before the next one starts, so six or eight of them
+ * are always in the air together. Widen the step and the page comes apart into
+ * separate landings.
+ *
+ * And the pieces are small. A whole block arriving at once is a sheet of paper
+ * being laid down; the same block arriving as five lines is writing.
+ */
+@keyframes rule-draw-x {
   from {
     opacity: 0;
-    transform: scale(0.95);
+    transform: scaleX(0);
   }
   to {
     opacity: 1;
-    transform: scale(1);
+    transform: scaleX(1);
   }
 }
 
-img.fade-in {
-  animation: fadeIn 0.5s ease-in-out;
+@keyframes block-rise {
+  from {
+    transform: translate3d(0, 8px, 0);
+  }
+  to {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes block-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.rule-draw-x {
+  transform-origin: left center;
+  animation: rule-draw-x 560ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/*
+ * Two ways in, one movement.
+ *
+ * `.block-in` animates the element it sits on. `.stagger-in` animates the
+ * direct children of the element it sits on, each one a step later than the one
+ * before it. Almost everything on this page arrives the second way.
+ *
+ * The rise is written as `translate3d` rather than as `translateY`, which is
+ * what puts each piece on the compositor for the length of its animation. The
+ * text is then moved as a finished layer instead of being re-rasterized every
+ * frame, and on type this small that is the difference between a glide and a
+ * shimmer. `will-change` would do the same thing, but it would hold the layer
+ * for the life of the page, and by the end of this there are around twenty
+ * pieces that would each be holding one.
+ */
+.block-in,
+.stagger-in > * {
+  animation:
+    block-rise 380ms cubic-bezier(0.22, 0.61, 0.36, 1) both,
+    block-fade 240ms linear both;
+}
+
+.block-in {
+  animation-delay: calc(var(--enter-delay, 0ms) + var(--stagger-offset, 0ms));
+}
+
+/*
+ * A piece's delay is built from three numbers, and each one is set by whoever
+ * knows it:
+ *
+ *   --enter-delay     when this block starts. Set on the block wrapper in
+ *                     app/page.tsx, so the reading order of that file and the
+ *                     order things arrive on screen are the same list.
+ *   --stagger-offset  how far into the block this particular run of lines
+ *                     starts. Set on the container, for the cases where a
+ *                     block has two runs in it that must not begin together.
+ *   --stagger-step    the gap between siblings. 40ms unless a container says
+ *                     otherwise.
+ *
+ * All three inherit, so a container states only the one it changes.
+ */
+.stagger-in > * {
+  --stagger-index: 0;
+  animation-delay: calc(
+    var(--enter-delay, 0ms) + var(--stagger-offset, 0ms) +
+      var(--stagger-step, 40ms) * var(--stagger-index)
+  );
+}
+
+/*
+ * The index has to be counted in CSS, because the children are written as
+ * markup and as `.map()` output and neither can be asked to number itself
+ * without threading a prop through every component on the page.
+ *
+ * Sixteen is the cap. A seventeenth child falls back to index 0 and arrives
+ * with the first one -- visible, but early. No container here holds more than
+ * six.
+ */
+.stagger-in > *:nth-child(2) {
+  --stagger-index: 1;
+}
+.stagger-in > *:nth-child(3) {
+  --stagger-index: 2;
+}
+.stagger-in > *:nth-child(4) {
+  --stagger-index: 3;
+}
+.stagger-in > *:nth-child(5) {
+  --stagger-index: 4;
+}
+.stagger-in > *:nth-child(6) {
+  --stagger-index: 5;
+}
+.stagger-in > *:nth-child(7) {
+  --stagger-index: 6;
+}
+.stagger-in > *:nth-child(8) {
+  --stagger-index: 7;
+}
+.stagger-in > *:nth-child(9) {
+  --stagger-index: 8;
+}
+.stagger-in > *:nth-child(10) {
+  --stagger-index: 9;
+}
+.stagger-in > *:nth-child(11) {
+  --stagger-index: 10;
+}
+.stagger-in > *:nth-child(12) {
+  --stagger-index: 11;
+}
+.stagger-in > *:nth-child(13) {
+  --stagger-index: 12;
+}
+.stagger-in > *:nth-child(14) {
+  --stagger-index: 13;
+}
+.stagger-in > *:nth-child(15) {
+  --stagger-index: 14;
+}
+.stagger-in > *:nth-child(16) {
+  --stagger-index: 15;
+}
+
+/*
+ * Someone who asked for less motion still gets the page, all at once and
+ * already in place.
+ */
+@media (prefers-reduced-motion: reduce) {
+  .rule-draw-x,
+  .block-in,
+  .stagger-in > * {
+    animation: none;
+  }
+}
+
+/*
+ * The contribution grid is wider than the column on most screens, so it scrolls
+ * on its own. A default scrollbar is far too loud next to 10px squares, so it
+ * is drawn as one more hairline.
+ */
+.rule-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: var(--rule) transparent;
+}
+
+.rule-scrollbar::-webkit-scrollbar {
+  height: 6px;
+}
+
+.rule-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.rule-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--rule);
+  border-radius: 3px;
 }

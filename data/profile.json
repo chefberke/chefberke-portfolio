@@ -1,26 +1,17 @@
 {
-  "titles": [
-    "Software Developer",
-    "Full Stack Developer",
-    "Mobile Developer",
-    "Frontend Developer",
-    "Design System Engineer",
-    "Web Developer",
-    "Open Source Contributor",
-    "Backend Developer"
-  ],
+  "name": "Berke Kanber",
+  "location": "Izmir, Turkiye",
+  "title": "Full Stack Developer",
   "experiences": [
     {
-      "company": "Mavera Technology Software",
+      "company": "Mavera Technology",
       "roles": [
         {
           "title": "Full Stack Developer",
-          "description": "Building production-ready web and mobile apps with React, Next.js, and Node.js, and delivering AI-powered features with a focus on scalability and performance, with consistent delivery quality and user impact.",
           "date": "Sep 2025 - Present"
         },
         {
-          "title": "Software Developer Intern",
-          "description": "Contributed to web app development using React, Next.js, and Node.js, while gaining experience in AI projects and the software development lifecycle, across cross-functional teams and reviews.",
+          "title": "Full Stack Developer Intern",
           "date": "Jul 2025 - Sep 2025"
         }
       ]
@@ -30,7 +21,6 @@
       "roles": [
         {
           "title": "Frontend Developer",
-          "description": "Participating in developing a next-generation e-commerce application. Focused on bringing Figma prototypes to life with Next.js and improving usability.",
           "date": "Aug 2025 - Nov 2025"
         }
       ]
@@ -39,8 +29,7 @@
       "company": "Dataprism",
       "roles": [
         {
-          "title": "Software Developer",
-          "description": "Developed an open-source web analytics platform with real-time tracking and user insights. Built GitHub Analytics feature and intuitive dashboard interfaces.",
+          "title": "Full Stack Developer",
           "date": "Sep 2024 - Nov 2025"
         }
       ]
@@ -49,24 +38,39 @@
   "projects": [
     {
       "title": "Gitcord",
-      "description": "A centralized dashboard for developers to monitor and analyze GitHub repositories with real-time insights, tracking contributions, commits, and repository performance.",
-      "badges": ["Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
+      "description": "A dashboard for GitHub activity: commits, contributions, and repository health.",
+      "badges": [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "MongoDB"
+      ],
       "github": "https://github.com/trygitcord/gitcord",
-      "view": "https://gitcord.pro"
+      "view": "https://gitcord.vercel.app"
     },
     {
       "title": "Dataprism",
-      "description": "Open-source web analytics platform with real-time visitor tracking, detailed reporting, and user behavior insights for modern websites.",
-      "badges": ["Next.js", "Hono.js", "Tailwind CSS", "PostgreSQL"],
+      "description": "Open-source web analytics: traffic and visitor behavior, in real time.",
+      "badges": [
+        "Next.js",
+        "Hono.js",
+        "Tailwind CSS",
+        "PostgreSQL"
+      ],
       "github": "https://github.com/trydataprism/dataprism",
-      "view": "https://dataprism.app"
+      "view": "https://dataprism-waitlist.vercel.app"
     },
     {
       "title": "Calira",
-      "description": "A minimalist task management app that helps teams stay organized and productive, with simplicity and seamless collaboration in one place.",
-      "badges": ["Next.js", "TypeScript", "Tailwind CSS", "PostgreSQL"],
+      "description": "A minimal task manager for personal use, simple by design.",
+      "badges": [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "PostgreSQL"
+      ],
       "github": "https://github.com/chefberke/calira",
-      "view": "https://calira.me"
+      "view": "https://calira.vercel.app"
     }
   ]
 }
