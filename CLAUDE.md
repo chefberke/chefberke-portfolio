@@ -73,6 +73,34 @@ the bio; replayed as-is on a click, that would be a quarter-second of nothing
 between pressing a tab and seeing it answer. So `Tabs` zeroes `--enter-delay` and
 `--stagger-offset` on the panel once the reader has switched a tab.
 
+### The reading head
+
+The page's entry is the only motion on a clock. There is one more on the site
+and it has no clock at all: on a post, the single pass of light that ran down
+the gutter rule at load comes back as `.gutter-rule__head` and stands where the
+reader stands in the piece. It moves only when the reader scrolls.
+
+It is a CSS scroll timeline — `animation-timeline: scroll(root block)` — so the
+light is placed off the main thread and nothing polls the scroll position. Three
+things hold it together and each is easy to undo:
+
+- **It is written as longhands, never the `animation:` shorthand.** The
+  shorthand resets `animation-timeline` to `auto`, which silently turns it back
+  into a timed animation that plays through once.
+- **`animation-duration: auto`.** On a scroll timeline that spreads the
+  keyframes over the whole scroll, which is the only thing that makes 100% mean
+  the end of the post. The easing is `linear` for the same reason — any curve
+  puts the light where the reader is not.
+- **It thins as it descends**, because the rule it rides is a gradient that is
+  gone by the bottom. A light brighter than its line comes loose and floats.
+
+The whole block sits inside `@supports (animation-timeline: scroll())`, and the
+element's own style is `opacity: 0`. A browser without scroll timelines, and a
+post too short to scroll, both get the page exactly as it is otherwise drawn.
+
+`SiteNav` mounts it on `/blog/<slug>` only. A page must be one long thing read
+top to bottom before "where you are in it" is worth answering in the margin.
+
 Every animation is turned off under `prefers-reduced-motion: reduce`. A new one
 belongs in that list too.
 

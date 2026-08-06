@@ -21,6 +21,19 @@ function isOpen(pathname: string, href: string) {
 }
 
 /**
+ * A post, and only a post -- `/blog` itself is a shelf, not a piece.
+ *
+ * This is what the gutter's reading head is drawn for. A page has to be one
+ * long thing read top to bottom before "where you are in it" is a question
+ * worth answering in the margin; the home page is a column of separate blocks
+ * and the shelf is a short list, and on both of those a light tracking the
+ * scroll would be saying something the page does not mean.
+ */
+function isReading(pathname: string) {
+  return pathname.startsWith("/blog/");
+}
+
+/**
  * A page name is a micro label, the same as every tab and every section title
  * on the page. Navigation is not a new kind of type; it is the page's own.
  */
@@ -66,6 +79,11 @@ export function GutterNav() {
       <div aria-hidden="true" className="gutter-rule">
         <div className="gutter-rule__base" />
         <div className="gutter-rule__shine" />
+        {/* On a post, the pass of light comes back and stays -- standing where
+            the reader stands, moving only when they scroll. It is mounted only
+            where it means something, so no other page carries a fixed element
+            it never shows. */}
+        {isReading(pathname) ? <div className="gutter-rule__head" /> : null}
       </div>
 
       <nav

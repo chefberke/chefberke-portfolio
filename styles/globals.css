@@ -337,6 +337,103 @@ body {
 }
 
 /*
+ * The reading head: the same pass of light, handed to the reader.
+ *
+ * On load the light runs down the gutter rule once and is gone. On a post it
+ * comes back, and this time it does not run on a clock -- it stands where the
+ * reader stands in the piece. Scroll and it glides down the rule; stop and it
+ * stops with you. Nothing here is on a timer, so this is not the pulsing bar
+ * the load shine refuses to be: it is a finger held in the margin, and it only
+ * ever says one thing, which is how far down the page you are.
+ *
+ * It is the same 2px of blue-thinned-to-white inside the same 1px box that
+ * clips it, for the same reason -- softened against the hairline rather than
+ * read as a second rule. Only what drives it is different.
+ *
+ * The whole of it is opacity and transform on a scroll timeline, which is
+ * driven off the main thread. A scroll listener writing a custom property could
+ * put the light in the same places, but it would do it a frame late, on the
+ * thread that is also laying out the post.
+ *
+ * Drawn only on a post -- see components/shared/SiteNav.tsx. The home page is a
+ * column of blocks and the shelf is a short list; neither is a document you
+ * hold a place in.
+ */
+.gutter-rule__head {
+  position: absolute;
+  left: -0.5px;
+  width: 2px;
+  height: 26%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--link) 35%, var(--surface)) 45%,
+    color-mix(in srgb, var(--link) 55%, var(--surface)) 55%,
+    transparent 100%
+  );
+  filter: blur(0.3px);
+  /*
+   * The resting state, and the whole of the fallback. A browser without scroll
+   * timelines drops the block below and keeps this line, so the post is exactly
+   * the page it is today -- no light, nothing missing, nothing broken.
+   *
+   * It is also what a post too short to scroll gets. An inactive timeline
+   * leaves the element on its own styles, and a piece with no length has no
+   * place in it to hold.
+   */
+  opacity: 0;
+}
+
+@supports (animation-timeline: scroll()) {
+  .gutter-rule__head {
+    /*
+     * Longhands, not the shorthand. `animation:` resets `animation-timeline` to
+     * `auto`, so the one line that makes this a scroll timeline would be undone
+     * by the line above it unless the order were kept in mind forever.
+     *
+     * `auto` here is not a fallback duration -- on a scroll timeline it means
+     * the keyframes are spread across the whole scroll, which is the only
+     * duration that makes 100% mean the end of the post. And the easing is
+     * linear because any other curve would put the light somewhere the reader
+     * is not.
+     */
+    animation-name: rule-read-y;
+    animation-duration: auto;
+    animation-timing-function: linear;
+    animation-fill-mode: both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+/*
+ * The light comes up out of nothing in the first breath of scroll, so the top
+ * of a post is the page as it was drawn -- the load pass has run, and the head
+ * has not arrived to sit under it.
+ *
+ * Then it thins the whole way down. The rule under it is a gradient that is
+ * solid to 45% and gone by the bottom, and a light brighter than the line it
+ * rides would come loose from it and float in the margin. So both run out
+ * together, and 190% is where that leaves the head standing at the end of a
+ * post: low on the rule, nearly out, still on it.
+ */
+@keyframes rule-read-y {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0);
+  }
+  6% {
+    opacity: 0.7;
+  }
+  60% {
+    opacity: 0.45;
+  }
+  100% {
+    opacity: 0.12;
+    transform: translate3d(0, 190%, 0);
+  }
+}
+
+/*
  * Two ways in, one movement.
  *
  * `.block-in` animates the element it sits on. `.stagger-in` animates the
@@ -454,8 +551,15 @@ body {
 
   /* The rule stays; only the light that ran down it goes. It was the one thing
      here that carried no information, so it is also the one thing that is not
-     replaced by its finished state. */
-  .gutter-rule__shine {
+     replaced by its finished state.
+
+     The reading head goes with it. It does carry something -- where you are in
+     the post -- but it is the same light saying it, and someone who asked for
+     less motion has not asked for a lamp that follows their scroll. The scroll
+     bar already answers that question, and it answers it without moving
+     anything that is not already moving. */
+  .gutter-rule__shine,
+  .gutter-rule__head {
     display: none;
   }
 
