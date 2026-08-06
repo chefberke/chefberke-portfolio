@@ -86,10 +86,11 @@ export default function Home() {
         <SiteFooter />
       </div>
       {/*
-        Note for whoever puts the graph back: the graph's fetch is what gave
-        this page its hourly revalidate. Without it the page is fully static, so
-        the footer's "last updated" date now moves only on deploy. That is still
-        true to the label, but it is no longer live.
+        Note for whoever puts the graph back: the graph's fetch is what asked
+        this page to revalidate hourly, and the site is a static export now, so
+        putting it back does not make the page live either way -- the graph and
+        the footer's "last updated" date would both be the last deploy's. That
+        is still true to the label; it is just not a clock.
 
         The graph also goes in ahead of the footer, so push the footer's start
         from 400ms to 480ms when it comes back.

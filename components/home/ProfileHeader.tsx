@@ -44,7 +44,9 @@ export default function ProfileHeader({ name, title }: ProfileHeaderProps) {
 
             The hairline around it is the same color as the page frame, so it
             sits in the layout rather than on top of it. The source is 800px
-            square, so next/image has room for any pixel ratio.
+            square: room for any pixel ratio, and the file the reader is sent,
+            since a static export has no optimizer to cut it down. It is 72KB.
+            Shrink the source before adding a second photograph, not after.
 
             The photo arrives one step ahead of the name beside it -- the same
             step every other line on the page uses. Nothing inside it moves on
@@ -56,13 +58,6 @@ export default function ProfileHeader({ name, title }: ProfileHeaderProps) {
               alt={`${name}, ${title}`}
               width={56}
               height={56}
-              // Above Next's default of 75. A face drawn this small has no
-              // detail to spare, and at 75 it came out a 1.2KB webp with the
-              // eyes and the glasses smeared into the skin. 90 roughly doubles
-              // the file, which is nothing on a page with one image on it.
-              // The allowed values are listed in next.config.ts -- Next 16
-              // rejects any quality that is not on that list.
-              quality={90}
               priority
               className="size-14"
             />

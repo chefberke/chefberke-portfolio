@@ -1,0 +1,23 @@
+# Cloudflare Pages types a file by its extension, and the four routes below are
+# the only files in the build that do not have one: Next names a metadata image
+# after its route, so they are written as `out/icon` and `out/opengraph-image`.
+# Untyped they go out as application/octet-stream, which is a favicon a browser
+# will not draw and a card no scraper will open.
+#
+# Nothing else needs a line here. Every other file in `out/` is a `.html`, a
+# `.png`, a `.txt` or a `.xml` and says so in its name.
+#
+# `:slug` matches one path segment, which is the shape of the post cards. A
+# splat would be the wrong tool: it is greedy, and `/blog/*` is the blog itself.
+
+/icon
+  Content-Type: image/png
+
+/opengraph-image
+  Content-Type: image/png
+
+/blog/opengraph-image
+  Content-Type: image/png
+
+/blog/:slug/opengraph-image
+  Content-Type: image/png

@@ -388,10 +388,10 @@ no compiler on the pipeline, so no HTML string is ever built; raw HTML written
 into a post is dropped rather than rendered.
 
 Everything runs at build time. Every blog route is prerendered
-(`generateStaticParams` plus `dynamicParams = false`), because the deploy target
-refuses a server function. **A route that reads the filesystem on request will
-not run at all** — that is the same constraint that keeps `apple-touch-icon.png`
-in `public/`.
+(`generateStaticParams` plus `dynamicParams = false`), because there is no server
+at the other end of this build. **A route that reads the filesystem on request
+will not run at all** — that is the same constraint that keeps
+`apple-touch-icon.png` in `public/`, and it is the whole of _The build_ below.
 
 ### Headings
 
@@ -438,4 +438,44 @@ that is in place inside a second is the rule the stagger exists to serve.
 `lib/github.ts` scrapes `github.com/users/<login>/contributions`, the same public
 fragment GitHub's own profile page fetches. No API token, by design. It is HTML,
 so the shape is GitHub's to change: every failure path returns `null` and the
-section drops off the page rather than breaking the build. Revalidates hourly.
+section drops off the page rather than breaking the build.
+
+Its `revalidate: 3600` is now a build-time number and nothing more: the fetch
+runs once, while the page is being written, and the graph it draws is the graph
+of the last deploy. Nothing on a static export comes back an hour later. The
+call keeps the field because the day this site has a server again is the day it
+means what it says.
+
+## The build
+
+`next build` writes the finished site to `out/` and that is the whole artifact —
+`output: "export"` in `next.config.ts`. Cloudflare Pages serves the directory:
+**build command `npm run build`, output directory `out`, and no adapter.**
+
+There used to be one. `@cloudflare/next-on-pages` wrapped the build in a Worker,
+and it is deprecated and no longer reads what Next 16 emits: it dropped the three
+cards, the icon, `robots.txt` and `sitemap.xml` out of the deploy without naming
+one of them, then refused the build over the one route it could not classify.
+Nothing here needed the Worker it was building. Every page, card and file on this
+site is drawn while the build runs.
+
+So the rule the rest of this file keeps referring to is now the build's own: **a
+route that reads anything at request time fails `next build` by name.** There is
+no request.
+
+Three things follow from it, and each one is a line somewhere:
+
+- **A metadata route must say `dynamic = "force-static"`.** `app/icon.tsx`,
+  `app/robots.ts`, `app/sitemap.ts` and all three `opengraph-image.tsx` carry it.
+  Without it the route is compiled as a handler and the export stops on it.
+- **`next/image` is `unoptimized`.** There is no optimizer at the other end, and
+  there never was one — the Cloudflare deploy has been serving `/_next/image`
+  the source bytes for as long as it has existed. The component still measures
+  the file and reserves its box, which is the half of it this site uses. The
+  consequence: **an image belongs in `public/` at roughly the size it is read
+  at**, because the whole file is now what ships.
+- **`public/_headers` types the files that have no extension.** Pages reads
+  a file's type off its name, and Next names a metadata image after its route —
+  `out/icon`, `out/opengraph-image`. Untyped they go out as
+  `application/octet-stream`: a favicon no browser draws, a card no scraper
+  opens. Add a page with a card, add its two lines there.

@@ -4,6 +4,9 @@ import { tokens } from "@/lib/tokens";
 import { Card, CARD_SIZE, cardFonts, cardPhoto } from "@/lib/ogCard";
 
 export const size = CARD_SIZE;
+// Written as a file, not answered as a route: `output: "export"` draws a
+// metadata route at build time only if the route says it is static.
+export const dynamic = "force-static";
 export const contentType = "image/png";
 
 /**

@@ -7,6 +7,9 @@ import { STAR_PATH_SMALL } from "@/components/shared/Star";
 // clean downscale of a large raster keeps the points of the star far better
 // than rasterizing the curves straight onto a 16-pixel grid does.
 export const size = { width: 64, height: 64 };
+// Written as a file, not answered as a route: `output: "export"` draws a
+// metadata route at build time only if the route says it is static.
+export const dynamic = "force-static";
 export const contentType = "image/png";
 
 /**

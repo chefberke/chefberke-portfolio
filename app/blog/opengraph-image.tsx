@@ -4,6 +4,9 @@ import { Card, CARD_SIZE, MICRO, cardFonts } from "@/lib/ogCard";
 import { getPostList } from "@/lib/posts";
 
 export const size = CARD_SIZE;
+// Written as a file, not answered as a route: `output: "export"` draws a
+// metadata route at build time only if the route says it is static.
+export const dynamic = "force-static";
 export const contentType = "image/png";
 
 /**

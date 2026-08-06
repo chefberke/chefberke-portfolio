@@ -14,21 +14,19 @@ import { Card, CARD_SIZE, MICRO, cardFonts } from "@/lib/ogCard";
  * to fill and the route stays dynamic -- which the deploy target refuses.
  *
  * One thing this file cannot say: `dynamicParams = false`. The same loader
- * strips it, so the route keeps a blocking fallback for slugs that do not
- * exist, and `bun run build` reports `fallback=null` for it in
- * `.next/prerender-manifest.json`. Every real card is a finished PNG, and the
- * page beside this one 404s before an unknown slug could ever reach the image,
- * so nothing links to that path. If the deploy ever refuses the route for
- * having it, delete this file and name the site-wide card in the page's
- * `openGraph.images` instead; the cost is that every post shares one picture.
- * `dynamic = "force-static"` and a segment layout were both tried and neither
- * closes it.
+ * strips it, so this route alone in the folder cannot state that its list of
+ * slugs is the whole list. Under `output: "export"` it does not have to: a
+ * build writes one PNG per slug and stops, and a slug that was never listed is
+ * a path that does not exist rather than a fallback waiting to be rendered.
  */
 export function generateStaticParams() {
   return getPostSlugs().map((slug) => ({ slug }));
 }
 
 export const size = CARD_SIZE;
+// Written as a file, not answered as a route: `output: "export"` draws a
+// metadata route at build time only if the route says it is static.
+export const dynamic = "force-static";
 export const contentType = "image/png";
 
 export default async function PostOpenGraphImage({
