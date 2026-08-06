@@ -292,6 +292,61 @@ Three things hold it together:
 A fourth preference is one more `OptionRow`, its choices in `lib/reading.ts`
 beside the others, and a `:root[data-…]` rule for its value to land in.
 
+## Share cards
+
+A card is the top of the page it stands for, drawn at card scale. Same frame —
+the hairline across the top, the rule down the left margin with `home` and
+`blog` hanging off it and the open one in blue — and the same corner saying
+where the site is written from. What changes between one card and the next is
+only the block in the middle. `lib/ogCard.tsx` draws everything except that
+block; each `opengraph-image.tsx` supplies it and nothing else.
+
+There are three, and there is one per page for a reason: the frame names the
+open page, so a page borrowing another page's card would be a frame that lies.
+Add a page, add its card beside it.
+
+Two things do not carry over from the page. The clock under the location is live
+there and would be frozen here, so the corner keeps the place and drops the
+hour. And the type is bigger: a page is read at arm's length, a card is read as
+a thumbnail in a feed, and being legible at 500px wide is the one thing a card
+is allowed to disagree with the page about.
+
+### What it took to look like the site
+
+**Satori cannot open a `woff2`.** That is the whole reason the old cards were
+set in a stray sans. `app/fonts/*-card.ttf` are the same two faces decompressed
+and cut down to Latin-1, Latin Extended-A and general punctuation — 53KB for the
+pair instead of 2MB. A post whose title reaches outside that range comes out
+blank and needs the subset widened.
+
+Three more things that are easy to undo:
+
+- **A gradient must not end on `transparent`.** That keyword is transparent
+  _black_, and Satori interpolates without premultiplying, so the fading half of
+  the gutter rule came out gray and darker than the rule above it. It ends on
+  `fade(tokens.rule, 0)` — the same color at zero — which is why `fade` is
+  exported from `lib/tokens.ts` now.
+- **`metadata.openGraph.images` is not set anywhere.** An explicitly named image
+  is inherited whole by every segment under it, so naming the home page's card
+  in the layout would put the photograph and a gutter pointing at `home` on the
+  blog. Left unset, Next fills the field per segment from the
+  `opengraph-image.tsx` beside that segment's page, and hashes each URL so a
+  redrawn card is not served from a scraper's cache.
+- **A box holding two JSX children must declare a display.** `{n} min read` is
+  two children. Every interpolated label here is written as one template string.
+
+### What a card, a description and the structured data may not say
+
+No frameworks. Not in `description`, not in `keywords`, not in the JSON-LD
+`description`. A stack is what the work was done with, not what it is; the list
+dates the moment it is written and is the same one every other developer's card
+carries. The projects in `data/profile.json` already say it in the only place it
+is a fact rather than a claim, and `knowsAbout` in `lib/jsonLd.ts` is built from
+those — which is where a machine asks the question.
+
+The descriptions are the bio said shortly. `components/home/AboutSection.tsx` is
+where the words come from.
+
 ## Content
 
 `data/profile.json` holds the name, location, title, experience, and projects.
