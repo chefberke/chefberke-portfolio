@@ -33,13 +33,21 @@ export const palette = {
 } as const;
 
 /**
- * `blue` at partial strength, for the contribution grid.
+ * Any color in here at partial strength.
  *
- * The steps are one color at four opacities rather than four hand-picked
- * shades. That guarantees they stay a single ramp: change `palette.blue` and
- * the whole grid follows it, still evenly spaced, with nothing to re-tune.
+ * It draws the contribution grid: four opacities of one blue rather than four
+ * hand-picked shades, which is what guarantees the steps stay a single ramp --
+ * change `palette.blue` and the whole grid follows it, evenly spaced, with
+ * nothing to re-tune.
+ *
+ * It is exported for the share cards, which need the same color at zero. A
+ * gradient that ends at the `transparent` keyword is a gradient that ends at
+ * transparent *black*, and every renderer that interpolates without
+ * premultiplying drags the middle of it down toward gray -- which is what a
+ * hairline fading out must not do. Ending on `fade(color, 0)` keeps the whole
+ * ramp on one hue. See `lib/ogCard.tsx`.
  */
-function fade(hex: string, opacity: number): string {
+export function fade(hex: string, opacity: number): string {
   const value = Number.parseInt(hex.slice(1), 16);
   const channels = [(value >> 16) & 255, (value >> 8) & 255, value & 255];
   return `rgb(${channels.join(" ")} / ${opacity})`;

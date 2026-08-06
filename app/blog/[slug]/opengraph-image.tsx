@@ -1,9 +1,10 @@
 import { ImageResponse } from "next/og";
 import { formatPostDate, getPost, getPostSlugs } from "@/lib/posts";
 import { tokens } from "@/lib/tokens";
+import { Card, CARD_SIZE, MICRO, cardFonts } from "@/lib/ogCard";
 
 /**
- * The card for one post: the site's own card with the post's title in it.
+ * The card for one post: the top of that post, in the site's frame.
  *
  * `generateStaticParams` is exported from this file rather than inherited from
  * the page beside it, and it is what makes the difference between a set of PNGs
@@ -27,11 +28,7 @@ export function generateStaticParams() {
   return getPostSlugs().map((slug) => ({ slug }));
 }
 
-export const size = {
-  width: 1200,
-  height: 630,
-};
-
+export const size = CARD_SIZE;
 export const contentType = "image/png";
 
 export default async function PostOpenGraphImage({
@@ -41,74 +38,42 @@ export default async function PostOpenGraphImage({
 }) {
   const { slug } = await params;
   const post = getPost(slug);
+  const fonts = await cardFonts();
 
   return new ImageResponse(
     (
-      <div
-        style={{
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "flex-start",
-          padding: "96px 100px",
-          backgroundColor: tokens.surface,
-          color: tokens.primary,
-          // Satori cannot read the vendored Ioskeley woff2, so the card asks
-          // for a monospace face and takes whatever the renderer has -- the
-          // same trade the site card makes. See app/opengraph-image.tsx.
-          fontFamily: "monospace",
-        }}
-      >
-        <div
-          style={{
-            fontSize: 24,
-            letterSpacing: "1.2px",
-            textTransform: "uppercase",
-            color: tokens.faint,
-          }}
-        >
-          berkekanber.com / blog
-        </div>
-        {/* A title is as long as it is. It wraps to a third line rather than
-            being cut, since half a sentence on a card is worse than a small
-            one. `display: flex` is Satori's requirement for a wrapping box. */}
+      // The gutter says `blog` in blue, which is the same thing the label above
+      // a post title says on the page -- so the column here opens on the title
+      // itself rather than repeating the word two inches to its right.
+      <Card page="blog">
+        {/* A title is as long as it is. It wraps rather than being cut, since
+            half a sentence on a card is worse than a small one, and it is set
+            at the page's own body color and case. `display: flex` is Satori's
+            requirement for a box whose text has to wrap. */}
         <div
           style={{
             display: "flex",
-            marginTop: 24,
-            fontSize: 56,
-            lineHeight: 1.2,
+            fontSize: 52,
+            lineHeight: 1.25,
+            color: tokens.primary,
           }}
         >
-          {post?.meta.title ?? "berke kanber"}
+          {post?.meta.title ?? "Notes on what I am building."}
         </div>
+
+        {/* What is known about it, in the one line the page sets it on: the
+            date and the reading time, both micro labels, neither qualified. */}
         {post ? (
-          <div
-            style={{
-              marginTop: 16,
-              fontSize: 30,
-              color: tokens.faint,
-            }}
-          >
-            {formatPostDate(post.meta.date)}
+          <div style={{ display: "flex", gap: 34, marginTop: 34 }}>
+            <div style={MICRO}>{formatPostDate(post.meta.date)}</div>
+            {/* One string, not a number beside a word: Satori counts JSX
+                children, and a box holding two of them has to declare a
+                display. */}
+            <div style={MICRO}>{`${post.meta.readingMinutes} min read`}</div>
           </div>
         ) : null}
-        {/* One blue rule, the same accent the page uses for everything live. */}
-        <div
-          style={{
-            marginTop: 40,
-            width: 120,
-            height: 6,
-            backgroundColor: tokens.link,
-          }}
-        />
-      </div>
+      </Card>
     ),
-    {
-      width: size.width,
-      height: size.height,
-    }
+    { ...CARD_SIZE, fonts }
   );
 }
