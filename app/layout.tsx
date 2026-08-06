@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { GutterNav, InlineNav } from "@/components/shared/SiteNav";
+import ReaderPanel from "@/components/shared/ReaderPanel";
 import { rootStyle } from "@/lib/tokens";
+import { BOOT_SCRIPT } from "@/lib/reading";
 import { SITE_URL } from "@/lib/site";
 import "@/styles/globals.css";
 
@@ -118,10 +120,36 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    /*
+     * `suppressHydrationWarning` is here for the script below, and for nothing
+     * else.
+     *
+     * That script runs before React does and writes the reader's preferences
+     * onto this element -- `--type-scale` as an inline style, `data-measure`
+     * and `data-motion` as attributes. So by the time React hydrates, the html
+     * tag in the DOM no longer matches the html tag the server rendered, and
+     * React says so. It is not a bug being hidden: it is the whole point of
+     * putting them on before the first paint, and there is no way to render
+     * them on the server, since only the browser knows what this reader chose.
+     *
+     * It reaches this element's own attributes and one level down, which is
+     * exactly the reach of the script. Everything inside the page is still
+     * checked as usual.
+     */
+    <html lang="en" suppressHydrationWarning>
       <head>
         {/* Publishes the lib/tokens.ts palette as CSS variables. */}
         <style dangerouslySetInnerHTML={{ __html: rootStyle }} />
+        {/*
+         * The reader's own size, measure and stillness, put on the document
+         * before the first paint.
+         *
+         * It is inline and blocking on purpose. Every page here is prerendered
+         * at the site's own size, so anything that waits for hydration is a
+         * page the reader watches arrive at 14px and then jump. See
+         * lib/reading.ts.
+         */}
+        <script dangerouslySetInnerHTML={{ __html: BOOT_SCRIPT }} />
         {/*
          * The home-screen icon, as a tag rather than as app/apple-icon.png or a
          * `metadata.icons` entry, for two reasons.
@@ -180,6 +208,15 @@ export default function RootLayout({
               </div>
             </main>
           </div>
+
+          {/*
+           * The one thing on the site that is pinned to a corner rather than
+           * written into the column. It sits here, in the layout, for the same
+           * reason the frame does: it belongs to the window, not to the page,
+           * and it should not be re-mounted and re-announced every time the
+           * reader moves between pages.
+           */}
+          <ReaderPanel />
         </div>
       </body>
     </html>
