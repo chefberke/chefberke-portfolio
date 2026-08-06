@@ -20,6 +20,11 @@ type MicroLabelProps = {
  * enough extra to stop the caps closing up -- pushed further, a label starts
  * reading as a logo. The leading matches the body text, so a tech-stack line
  * that wraps on a phone still sets on the page's rhythm.
+ *
+ * The size is `text-micro`, not a number. All three type steps on this site are
+ * variables, because a reader can move them together from the panel in the
+ * bottom corner -- see `--type-scale` in styles/globals.css. No px size is
+ * written in markup anywhere.
  */
 /**
  * The metrics on their own, without the color.
@@ -29,7 +34,7 @@ type MicroLabelProps = {
  * keeps the numbers in one place rather than two.
  */
 export const MICRO_LABEL =
-  "text-[12px] uppercase leading-[1.625] tracking-[0.05em]";
+  "text-micro uppercase leading-[1.625] tracking-[0.05em]";
 
 export default function MicroLabel({
   children,

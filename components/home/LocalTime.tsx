@@ -50,7 +50,7 @@ export default function LocalTime() {
   }, []);
 
   return (
-    <span className="text-[12px] uppercase leading-[1.625] tracking-[0.05em] text-faint">
+    <span className="text-micro uppercase leading-[1.625] tracking-[0.05em] text-faint">
       {time ?? "--:--:--"} {zoneLabel}
     </span>
   );

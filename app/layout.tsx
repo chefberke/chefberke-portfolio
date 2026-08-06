@@ -169,7 +169,7 @@ export default function RootLayout({
               {/* One rhythm down the whole column: every block is separated by
                   the same 14 units, so the page has no visual hierarchy of
                   spacing to read -- only the labels tell you where you are. */}
-              <div className="mx-auto flex w-full max-w-[620px] flex-col gap-14">
+              <div className="mx-auto flex w-full max-w-[var(--measure)] flex-col gap-14">
                 {/* The gutter has no room to stand in on a narrow window, so
                     the two page names are set as a strip at the top of the
                     column instead. It is `display: none` from `xl` up, where

@@ -104,7 +104,7 @@ export default function Tabs({ tabs, label }: TabsProps) {
               // them once the strip has focus.
               tabIndex={isActive ? 0 : -1}
               onClick={() => openTab(tab.id)}
-              className={`tab-underline cursor-pointer text-[12px] uppercase leading-none tracking-[0.05em] ${
+              className={`tab-underline cursor-pointer text-micro uppercase leading-none tracking-[0.05em] ${
                 isActive ? "text-link" : "text-faint hover:text-primary"
               }`}
             >

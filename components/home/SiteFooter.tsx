@@ -17,7 +17,7 @@ export default function SiteFooter() {
           own row on a phone, a right-aligned block would sit adrift. */}
       <div className="flex flex-col items-start gap-2 text-left sm:items-end sm:text-right">
         <MicroLabel>built with</MicroLabel>
-        <span className="text-[12px] leading-[1.625] tracking-[0.05em] text-faint">
+        <span className="text-micro leading-[1.625] tracking-[0.05em] text-faint">
           Next.js
         </span>
       </div>

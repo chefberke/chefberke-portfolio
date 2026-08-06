@@ -37,7 +37,7 @@ function isReading(pathname: string) {
  * A page name is a micro label, the same as every tab and every section title
  * on the page. Navigation is not a new kind of type; it is the page's own.
  */
-const NAME = "text-[12px] uppercase leading-none tracking-[0.05em]";
+const NAME = "text-micro uppercase leading-none tracking-[0.05em]";
 
 /**
  * The left gutter: one hairline down the page with the site's pages hanging

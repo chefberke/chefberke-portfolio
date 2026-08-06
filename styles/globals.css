@@ -22,6 +22,15 @@
   --font-mono: var(--font-ioskeley);
   --font-pixel: var(--font-pixel-square);
 
+  /*
+   * The three type steps, published the same way the colors are: markup names
+   * the role, never the number. See the `--type-*` variables below for what
+   * they are and what moves them.
+   */
+  --text-body: var(--type-body);
+  --text-micro: var(--type-micro);
+  --text-name: var(--type-name);
+
   --color-surface: var(--surface);
   --color-rule: var(--rule);
   --color-primary: var(--primary);
@@ -41,6 +50,50 @@
   color-scheme: light;
 
   /*
+   * The three sizes this site sets type in, and the one number that moves them.
+   *
+   * They are variables rather than literals for one reason: the reading panel
+   * in the bottom corner lets a reader take the page from 14 to 16 to 18, and
+   * every piece of type on it has to travel together or the page stops being
+   * one page. `--type-scale` is what the panel writes -- 1, 8/7, 9/7 -- and it
+   * is the only thing it writes.
+   *
+   * Type and nothing else. The scale is not on the root `font-size`, because
+   * Tailwind builds every spacing utility out of `0.25rem` and moving the root
+   * would take the padding, the gaps and the frame with it. That is a zoom, and
+   * a zoom drags the hairlines off 1px. This grows the words and leaves the
+   * page they are written on where it is.
+   *
+   * Every line height on this site is unitless, so they follow on their own.
+   */
+  --type-scale: 1;
+  --type-body: calc(14px * var(--type-scale));
+  --type-micro: calc(12px * var(--type-scale));
+  --type-name: calc(18px * var(--type-scale));
+
+  /*
+   * How wide the column is set. The reader has the second of these two, from
+   * the same panel, for a long piece.
+   */
+  --measure: 620px;
+
+  /*
+   * Whether anything on this site moves, as a number every duration on it is
+   * multiplied by.
+   *
+   * It is a multiplier and not a list of selectors because stillness is asked
+   * for in two ways that CSS cannot join into one rule -- a media query and an
+   * attribute -- and a list would have to be written twice and remembered
+   * twice. At `0`, every animation here runs for no time and its `both` fill
+   * leaves the element on its last keyframe, already in place. That is the same
+   * page the reduce-motion rule used to draw, with nothing named.
+   *
+   * The reading head has no duration at all -- it is a position, not a timing
+   * -- so it multiplies its opacity by this instead. Same gate, same number.
+   */
+  --motion: 1;
+
+  /*
    * Where the gutter hairline stands: one quarter of the way across the
    * window.
    *
@@ -58,10 +111,41 @@
    * binds between `xl` and about 1430px, and above that the rule is at 25%
    * exactly.
    *
+   * That 48px is the whole of the second term, so it is written out of
+   * `--measure` rather than added up by hand. The number used to be `358px`,
+   * which was `620/2 + 48` already -- deriving it is what keeps the rule the
+   * same distance clear of the text when a reader widens the column.
+   *
    * Below `xl` there is no margin left to rule at all, so the gutter is not
    * drawn and the page names are set as a strip at the top of the column.
    */
-  --gutter-x: min(25%, calc(50% - 358px));
+  --gutter-x: min(25%, calc(50% - (var(--measure) / 2 + 48px)));
+}
+
+/*
+ * The reader's three preferences, as the document wears them.
+ *
+ * `--type-scale` is written straight onto the element as an inline style, since
+ * it is a number on a ramp rather than a state. The other two are states, so
+ * they are attributes, and each one is only ever set -- never set to its
+ * default. That is what makes the motion switch one-way: nothing writes
+ * `data-motion="full"`, so a reader whose system asks for less motion keeps it
+ * whichever way they leave the switch.
+ *
+ * All three are applied by the script in app/layout.tsx before the first paint.
+ */
+:root[data-measure="wide"] {
+  --measure: 760px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion: 0;
+  }
+}
+
+:root[data-motion="still"] {
+  --motion: 0;
 }
 
 /*
@@ -70,13 +154,14 @@
  * without a table being drawn around them.
  *
  * 14px/1.625 is the one text size the page has. Everything smaller is a micro
- * label; the only thing larger is the name.
+ * label; the only thing larger is the name. It is named rather than written out
+ * because the reader can move all three together -- see `--type-scale` above.
  */
 body {
   background: var(--surface);
   color: var(--primary);
   font-family: var(--font-ioskeley), ui-monospace, SFMono-Regular, monospace;
-  font-size: 14px;
+  font-size: var(--type-body);
   line-height: 1.625;
 }
 
@@ -103,8 +188,8 @@ body {
   background-repeat: no-repeat;
   background-size: 0% 1px;
   transition:
-    background-size 320ms cubic-bezier(0.4, 0, 0.2, 1),
-    color 200ms;
+    background-size calc(320ms * var(--motion)) cubic-bezier(0.4, 0, 0.2, 1),
+    color calc(200ms * var(--motion));
 }
 
 /*
@@ -152,13 +237,8 @@ body {
   background-size: 100% 1px;
 }
 
-/* Someone who asked for less motion gets the underline, just not the wipe. */
-@media (prefers-reduced-motion: reduce) {
-  .link-underline,
-  .tab-underline {
-    transition: none;
-  }
-}
+/* Someone who asked for less motion gets the underline, just not the wipe --
+   `--motion` is 0 for them, so the rule is simply there or not there. */
 
 /*
  * The page's arrival.
@@ -219,7 +299,8 @@ body {
 
 .rule-draw-x {
   transform-origin: left center;
-  animation: rule-draw-x 560ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  animation: rule-draw-x calc(560ms * var(--motion))
+    cubic-bezier(0.22, 0.61, 0.36, 1) both;
 }
 
 /*
@@ -263,7 +344,8 @@ body {
     transparent 100%
   );
   transform-origin: top center;
-  animation: rule-draw-y 760ms cubic-bezier(0.22, 0.61, 0.36, 1) 140ms both;
+  animation: rule-draw-y calc(760ms * var(--motion))
+    cubic-bezier(0.22, 0.61, 0.36, 1) calc(140ms * var(--motion)) both;
 }
 
 .gutter-rule__shine {
@@ -279,7 +361,10 @@ body {
     transparent 100%
   );
   filter: blur(0.3px);
-  animation: rule-shine-y 900ms cubic-bezier(0.22, 0.61, 0.36, 1) 200ms both;
+  /* Its last keyframe is `opacity: 0`, so at `--motion: 0` the pass simply
+     never happens -- there is nothing to hide. */
+  animation: rule-shine-y calc(900ms * var(--motion))
+    cubic-bezier(0.22, 0.61, 0.36, 1) calc(200ms * var(--motion)) both;
 }
 
 /*
@@ -302,7 +387,7 @@ body {
   width: 2px;
   height: var(--nav-row);
   background: var(--link);
-  transition: top 280ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  transition: top calc(280ms * var(--motion)) cubic-bezier(0.22, 0.61, 0.36, 1);
 }
 
 @keyframes rule-draw-y {
@@ -350,15 +435,23 @@ body {
  * clips it, for the same reason -- softened against the hairline rather than
  * read as a second rule. Only what drives it is different.
  *
- * The whole of it is opacity and transform on a scroll timeline, which is
- * driven off the main thread. A scroll listener writing a custom property could
- * put the light in the same places, but it would do it a frame late, on the
- * thread that is also laying out the post.
+ * `--head-at` is how far down the post the light is, from 0 to 1, and it is the
+ * only thing that moves here. It is written by
+ * components/shared/ReadingHead.tsx, which travels it toward the scroll rather
+ * than pinning it to it -- read that file for why. Everything below is a
+ * function of that one number, so there is nothing here on a clock and nothing
+ * to keep in step with anything else.
  *
  * Drawn only on a post -- see components/shared/SiteNav.tsx. The home page is a
  * column of blocks and the shelf is a short list; neither is a document you
  * hold a place in.
  */
+@property --head-at {
+  syntax: "<number>";
+  inherits: false;
+  initial-value: 0;
+}
+
 .gutter-rule__head {
   position: absolute;
   left: -0.5px;
@@ -372,65 +465,41 @@ body {
     transparent 100%
   );
   filter: blur(0.3px);
+
   /*
-   * The resting state, and the whole of the fallback. A browser without scroll
-   * timelines drops the block below and keeps this line, so the post is exactly
-   * the page it is today -- no light, nothing missing, nothing broken.
-   *
-   * It is also what a post too short to scroll gets. An inactive timeline
-   * leaves the element on its own styles, and a piece with no length has no
-   * place in it to hold.
+   * 190% is where the rule runs out. The line the light rides is a gradient
+   * that is solid to 45% and gone by the bottom, and a light brighter than its
+   * line comes loose and floats -- so this is the end of a post with the head
+   * low on the rule, nearly out, still on it.
    */
-  opacity: 0;
-}
+  transform: translate3d(0, calc(var(--head-at) * 190%), 0);
 
-@supports (animation-timeline: scroll()) {
-  .gutter-rule__head {
-    /*
-     * Longhands, not the shorthand. `animation:` resets `animation-timeline` to
-     * `auto`, so the one line that makes this a scroll timeline would be undone
-     * by the line above it unless the order were kept in mind forever.
-     *
-     * `auto` here is not a fallback duration -- on a scroll timeline it means
-     * the keyframes are spread across the whole scroll, which is the only
-     * duration that makes 100% mean the end of the post. And the easing is
-     * linear because any other curve would put the light somewhere the reader
-     * is not.
-     */
-    animation-name: rule-read-y;
-    animation-duration: auto;
-    animation-timing-function: linear;
-    animation-fill-mode: both;
-    animation-timeline: scroll(root block);
-  }
-}
+  /*
+   * Two limits, whichever is lower.
+   *
+   * The first is the light coming up out of nothing in the first breath of
+   * scroll, so the top of a post is the page as it was drawn -- the load pass
+   * has run, and the head has not arrived under it. The second is it thinning
+   * the whole way down, 0.7 to 0.12, running out with the rule beneath it. They
+   * cross at about 6% and the descent holds from there.
+   *
+   * `--motion` multiplies the whole of it, the same as every duration on this
+   * site: at 0 the light is simply not there. That is also the resting state
+   * for a post too short to scroll and for a page where the script has not run
+   * -- `--head-at` is 0, so the page is exactly as it is otherwise drawn.
+   */
+  opacity: calc(
+    var(--motion) * min(var(--head-at) * 11.6, 0.7 - var(--head-at) * 0.58)
+  );
 
-/*
- * The light comes up out of nothing in the first breath of scroll, so the top
- * of a post is the page as it was drawn -- the load pass has run, and the head
- * has not arrived to sit under it.
- *
- * Then it thins the whole way down. The rule under it is a gradient that is
- * solid to 45% and gone by the bottom, and a light brighter than the line it
- * rides would come loose from it and float in the margin. So both run out
- * together, and 190% is where that leaves the head standing at the end of a
- * post: low on the rule, nearly out, still on it.
- */
-@keyframes rule-read-y {
-  0% {
-    opacity: 0;
-    transform: translate3d(0, 0, 0);
-  }
-  6% {
-    opacity: 0.7;
-  }
-  60% {
-    opacity: 0.45;
-  }
-  100% {
-    opacity: 0.12;
-    transform: translate3d(0, 190%, 0);
-  }
+  /*
+   * The one `will-change` on the site, and the exception the rule was written
+   * around: it is bad because it holds a compositor layer for the life of the
+   * page, and this element moves for the life of the page. Every other piece
+   * here animates once on load and is then done, which is why they get their
+   * layer from `translate3d` for the length of the animation and no longer.
+   */
+  will-change: transform, opacity;
 }
 
 /*
@@ -451,12 +520,15 @@ body {
 .block-in,
 .stagger-in > * {
   animation:
-    block-rise 380ms cubic-bezier(0.22, 0.61, 0.36, 1) both,
-    block-fade 240ms linear both;
+    block-rise calc(380ms * var(--motion)) cubic-bezier(0.22, 0.61, 0.36, 1)
+      both,
+    block-fade calc(240ms * var(--motion)) linear both;
 }
 
 .block-in {
-  animation-delay: calc(var(--enter-delay, 0ms) + var(--stagger-offset, 0ms));
+  animation-delay: calc(
+    (var(--enter-delay, 0ms) + var(--stagger-offset, 0ms)) * var(--motion)
+  );
 }
 
 /*
@@ -477,8 +549,11 @@ body {
 .stagger-in > * {
   --stagger-index: 0;
   animation-delay: calc(
-    var(--enter-delay, 0ms) + var(--stagger-offset, 0ms) +
-      var(--stagger-step, 40ms) * var(--stagger-index)
+    (
+        var(--enter-delay, 0ms) + var(--stagger-offset, 0ms) +
+          var(--stagger-step, 40ms) * var(--stagger-index)
+      ) *
+      var(--motion)
   );
 }
 
@@ -538,35 +613,47 @@ body {
 }
 
 /*
- * Someone who asked for less motion still gets the page, all at once and
- * already in place.
+ * The reading panel's scrim: the page held back while the panel is open.
+ *
+ * It is the site's own ink at a tenth of its strength, not black at a half. A
+ * scrim over paper is the paper in shadow; anything heavier reads as a second
+ * sheet laid on top of the page, and this panel is meant to be the page opening
+ * rather than something arriving over it.
+ *
+ * It is a plain element inside the <dialog> rather than `::backdrop`, because
+ * the backdrop sits outside the tree for the purpose of inheritance in older
+ * engines and none of the color variables above reach it there.
+ *
+ * It only fades. The card behind it rises with `.block-in`; a full-window box
+ * cannot rise 8px without opening an 8px gap along the bottom of the window
+ * while it does.
  */
-@media (prefers-reduced-motion: reduce) {
-  .rule-draw-x,
-  .gutter-rule__base,
-  .block-in,
-  .stagger-in > * {
-    animation: none;
-  }
-
-  /* The rule stays; only the light that ran down it goes. It was the one thing
-     here that carried no information, so it is also the one thing that is not
-     replaced by its finished state.
-
-     The reading head goes with it. It does carry something -- where you are in
-     the post -- but it is the same light saying it, and someone who asked for
-     less motion has not asked for a lamp that follows their scroll. The scroll
-     bar already answers that question, and it answers it without moving
-     anything that is not already moving. */
-  .gutter-rule__shine,
-  .gutter-rule__head {
-    display: none;
-  }
-
-  .gutter-marker {
-    transition: none;
-  }
+.panel-scrim {
+  background: color-mix(in srgb, var(--primary) 10%, transparent);
 }
+
+.scrim-in {
+  animation: block-fade calc(200ms * var(--motion)) linear both;
+}
+
+/*
+ * Someone who asked for less motion still gets the page, all at once and
+ * already in place -- and there is no list of selectors here saying so.
+ *
+ * `--motion` is 0 for them, every duration above is multiplied by it, and a
+ * zero-length animation with `both` leaves its element on its last keyframe.
+ * The page arrives finished. A new animation is still is by writing its
+ * duration the way the others are written; nothing has to be remembered twice.
+ *
+ * Two of them are worth saying out loud, because they used to be named here and
+ * now are not. The gutter shine ends on `opacity: 0`, so a zero-length pass
+ * never shows. And the reading head has no duration to zero -- it is a position
+ * -- so it multiplies its own opacity by `--motion` instead, and never lights.
+ * Its script reads the same variable and never starts. Someone who asked for
+ * less motion has not asked for a lamp that follows their scroll; the scroll bar
+ * already answers that question without moving anything that was not already
+ * moving.
+ */
 
 /*
  * Two things here are wider than the column and scroll on their own: the
@@ -778,7 +865,7 @@ body {
 }
 
 .post th {
-  font-size: 12px;
+  font-size: var(--type-micro);
   font-weight: inherit;
   text-transform: uppercase;
   letter-spacing: 0.05em;

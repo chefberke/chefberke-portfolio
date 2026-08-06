@@ -83,10 +83,10 @@ export default function ProfileHeader({
               negative tracking pulls the squares back together, since a pixel
               face sets loose at this size.
             */}
-            <h1 className="font-pixel text-[18px] lowercase leading-none tracking-[-0.025em] text-primary">
+            <h1 className="font-pixel text-name lowercase leading-none tracking-[-0.025em] text-primary">
               {name}
             </h1>
-            <p className="text-[12px] lowercase leading-none text-faint">
+            <p className="text-micro lowercase leading-none text-faint">
               {title}
             </p>
           </div>
