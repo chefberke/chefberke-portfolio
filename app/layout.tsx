@@ -121,6 +121,21 @@ export default function RootLayout({
       <head>
         {/* Publishes the lib/tokens.ts palette as CSS variables. */}
         <style dangerouslySetInnerHTML={{ __html: rootStyle }} />
+        {/*
+         * The home-screen icon, as a tag rather than as app/apple-icon.png or a
+         * `metadata.icons` entry, for two reasons.
+         *
+         * A static file under app/ is not prerendered: Next serves it from a
+         * Node function that reads it off disk, and the Cloudflare build
+         * refuses every function that is not Edge. Under public/ it is copied
+         * as a plain asset and no function is made. (icon.tsx keeps its own
+         * route because an ImageResponse is rendered at build time.)
+         *
+         * And `metadata.icons` replaces the file convention rather than adding
+         * to it -- declaring the apple icon there drops the favicon link that
+         * icon.tsx generates, hash and all.
+         */}
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </head>
       <body
         className={`${ioskeleyMono.variable} ${geistPixelSquare.variable} antialiased`}
