@@ -8,7 +8,7 @@ import { getPostList } from "@/lib/posts";
 export const metadata: Metadata = {
   title: "Blog",
   description:
-    "Notes by Berke Kanber on building web products with Next.js, React, and TypeScript.",
+    "Notes by Berke Kanber on what he is building: the things this site is made of, and whatever he happens to be working on at the time.",
   alternates: {
     canonical: "/blog",
   },
@@ -17,7 +17,7 @@ export const metadata: Metadata = {
     url: "/blog",
     title: "Blog | Berke Kanber",
     description:
-      "Notes by Berke Kanber on building web products with Next.js, React, and TypeScript.",
+      "Notes by Berke Kanber on what he is building: the things this site is made of, and whatever he happens to be working on at the time.",
   },
   // Next merges metadata field by field, not object by object, so a page that
   // sets `openGraph` and stops keeps the root layout's `twitter` whole -- and
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Blog | Berke Kanber",
     description:
-      "Notes by Berke Kanber on building web products with Next.js, React, and TypeScript.",
+      "Notes by Berke Kanber on what he is building: the things this site is made of, and whatever he happens to be working on at the time.",
   },
 };
 

@@ -53,8 +53,18 @@ export const metadata: Metadata = {
     default: "Berke Kanber | Full Stack Developer",
     template: "%s | Berke Kanber",
   },
+  /*
+   * The description is the bio, said once and shortly -- see
+   * `components/home/AboutSection.tsx`, which is where the words come from.
+   *
+   * It names no framework, and neither does anything else in this block. A
+   * stack is what the work was done with, not what it is; it dates the moment
+   * it is written, it is the same list every other developer's card carries,
+   * and the projects on the page already say it in the only place it is a fact
+   * rather than a claim.
+   */
   description:
-    "Berke Kanber is a full stack developer building fast, accessible web apps and design systems with Next.js, React, and TypeScript.",
+    "Berke Kanber is a full stack developer in Izmir, Turkiye. He builds web and mobile products from idea to production, and keeps improving them after they ship.",
   applicationName: "Berke Kanber",
   authors: [{ name: "Berke Kanber", url: SITE_URL }],
   creator: "Berke Kanber",
@@ -63,13 +73,9 @@ export const metadata: Metadata = {
     "Berke Kanber",
     "Full Stack Developer",
     "Full Stack Web Developer",
-    "Frontend Developer",
-    "Design System Engineer",
+    "Software Developer",
     "Web Developer",
-    "Next.js",
-    "React",
-    "TypeScript",
-    "JavaScript",
+    "Izmir",
   ],
   alternates: {
     canonical: "/",
@@ -81,25 +87,27 @@ export const metadata: Metadata = {
     siteName: "Berke Kanber",
     title: "Berke Kanber | Full Stack Developer",
     description:
-      "Berke Kanber is a full stack developer building fast, accessible web apps and design systems with Next.js, React, and TypeScript.",
-    images: [
-      {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
-        alt: "Berke Kanber",
-      },
-    ],
+      "Berke Kanber is a full stack developer in Izmir, Turkiye. He builds web and mobile products from idea to production, and keeps improving them after they ship.",
+    /*
+     * No `images` here, on purpose. Naming the route by hand pins every page on
+     * the site to the home page's card -- an explicitly set field is inherited
+     * whole by every segment under it, and `/blog` would go out showing the
+     * photograph with the gutter pointing at `home`. Left unset, Next fills the
+     * field per segment from the `opengraph-image.tsx` beside that segment's
+     * page, and stamps each URL with the content hash so a redrawn card is not
+     * served from a scraper's cache.
+     */
   },
   twitter: {
     card: "summary_large_image",
     title: "Berke Kanber | Full Stack Developer",
     description:
-      "Berke Kanber is a full stack developer building fast, accessible web apps and design systems with Next.js, React, and TypeScript.",
+      "Berke Kanber is a full stack developer in Izmir, Turkiye. He builds web and mobile products from idea to production, and keeps improving them after they ship.",
     // The handle as it is on X -- and as the footer links to it. A card
     // attributed to an account that does not exist is dropped, not guessed at.
     creator: "@chef_berke",
-    images: ["/opengraph-image"],
+    // Same reason as above. With no `twitter-image` file on any route, Next
+    // points `twitter:image` at the same per-segment card.
   },
   robots: {
     index: true,

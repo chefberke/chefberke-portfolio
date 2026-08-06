@@ -46,8 +46,12 @@ const person = {
   url: SITE_URL,
   image: `${SITE_URL}/images/chefberke.jpg`,
   jobTitle: profile.title,
+  // The same sentence the page's meta description carries, and for the same
+  // reason it names no framework: `knowsAbout` below is where a tool asks what
+  // the work is done with, and it is filled from shipped projects rather than
+  // from a claim written in prose.
   description:
-    "Full stack developer building web and mobile products with React, Next.js, and TypeScript.",
+    "Full stack developer building web and mobile products from idea to production, based in Izmir, Turkiye.",
   address: {
     "@type": "PostalAddress",
     addressLocality: locality,
