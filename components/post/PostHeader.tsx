@@ -1,5 +1,6 @@
 import Link from "next/link";
 import MicroLabel from "@/components/shared/MicroLabel";
+import Whereabouts from "@/components/shared/Whereabouts";
 import { formatPostDate, type PostMeta } from "@/lib/posts";
 
 /**
@@ -24,24 +25,31 @@ import { formatPostDate, type PostMeta } from "@/lib/posts";
  */
 export default function PostHeader({ title, date, readingMinutes }: PostMeta) {
   return (
-    <header className="stagger-in flex flex-col gap-2">
-      <MicroLabel as="p">
-        {/* `w-fit` so the underline is as wide as the word, not as wide as the
-            column -- the label is a block-level paragraph. */}
-        <Link
-          href="/blog"
-          className="link-underline block w-fit hover:text-primary"
-        >
-          blog
-        </Link>
-      </MicroLabel>
-      <h1 className="text-pretty text-primary">{title}</h1>
-      <p className="flex flex-wrap items-baseline gap-x-3">
-        <MicroLabel>
-          <time dateTime={date}>{formatPostDate(date)}</time>
+    // The same two-column corner the home page and the shelf open with: what
+    // this page is on the left, where it is written from on the right. The
+    // header is a plain flex row so each column runs its own cascade -- one
+    // `.stagger-in` inside another would move its subtree twice.
+    <header className="flex items-start justify-between gap-4">
+      <div className="stagger-in flex flex-col gap-2">
+        <MicroLabel as="p">
+          {/* `w-fit` so the underline is as wide as the word, not as wide as the
+              column -- the label is a block-level paragraph. */}
+          <Link
+            href="/blog"
+            className="link-underline block w-fit hover:text-primary"
+          >
+            blog
+          </Link>
         </MicroLabel>
-        <MicroLabel>{readingMinutes} min read</MicroLabel>
-      </p>
+        <h1 className="text-pretty text-primary">{title}</h1>
+        <p className="flex flex-wrap items-baseline gap-x-3">
+          <MicroLabel>
+            <time dateTime={date}>{formatPostDate(date)}</time>
+          </MicroLabel>
+          <MicroLabel>{readingMinutes} min read</MicroLabel>
+        </p>
+      </div>
+      <Whereabouts />
     </header>
   );
 }

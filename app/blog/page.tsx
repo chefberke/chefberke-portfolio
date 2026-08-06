@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import MicroLabel from "@/components/shared/MicroLabel";
 import PostList from "@/components/post/PostList";
+import Whereabouts from "@/components/shared/Whereabouts";
 import SiteFooter from "@/components/home/SiteFooter";
 import { getPostList } from "@/lib/posts";
 
@@ -51,11 +52,20 @@ export default function Blog() {
   return (
     <>
       <div className="[--enter-delay:40ms]">
-        <header className="stagger-in flex flex-col gap-2">
-          <MicroLabel as="p">blog</MicroLabel>
-          <h1 className="text-primary">
-            {posts.length > 0 ? "Notes on what I am building." : "Nothing published yet."}
-          </h1>
+        {/* The same two-column corner the home page opens with: what this page
+            is on the left, where it is written from on the right. The header
+            itself is a plain flex row so that each column runs its own cascade
+            -- one `.stagger-in` inside another would move its subtree twice. */}
+        <header className="flex items-start justify-between gap-4">
+          <div className="stagger-in flex flex-col gap-2">
+            <MicroLabel as="p">blog</MicroLabel>
+            <h1 className="text-primary">
+              {posts.length > 0
+                ? "Notes on what I am building."
+                : "Nothing published yet."}
+            </h1>
+          </div>
+          <Whereabouts />
         </header>
       </div>
 

@@ -51,11 +51,10 @@ export default function Home() {
       />
 
       <div className="[--enter-delay:40ms]">
-        <ProfileHeader
-          name={profile.name}
-          title={profile.title}
-          location={profile.location}
-        />
+        {/* The location is not passed down. It is a fact about the site rather
+            than about this page, so `Whereabouts` reads it itself -- which is
+            what lets the blog pages carry the same corner. */}
+        <ProfileHeader name={profile.name} title={profile.title} />
       </div>
       <div className="[--enter-delay:140ms]">
         <AboutSection />

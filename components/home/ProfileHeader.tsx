@@ -1,11 +1,10 @@
 import Image from "next/image";
 import MicroLabel from "@/components/shared/MicroLabel";
-import LocalTime from "@/components/home/LocalTime";
+import Whereabouts from "@/components/shared/Whereabouts";
 
 type ProfileHeaderProps = {
   name: string;
   title: string;
-  location: string;
 };
 
 /**
@@ -24,11 +23,7 @@ type ProfileHeaderProps = {
  * on the same beat, so the top of the page reads as one line being written
  * across before anything is written under it.
  */
-export default function ProfileHeader({
-  name,
-  title,
-  location,
-}: ProfileHeaderProps) {
+export default function ProfileHeader({ name, title }: ProfileHeaderProps) {
   return (
     <header className="flex items-start justify-between gap-4">
       <div className="flex flex-col gap-2">
@@ -92,10 +87,7 @@ export default function ProfileHeader({
           </div>
         </div>
       </div>
-      <div className="stagger-in flex flex-col items-end gap-2 text-right">
-        <MicroLabel>{location}</MicroLabel>
-        <LocalTime />
-      </div>
+      <Whereabouts />
     </header>
   );
 }
