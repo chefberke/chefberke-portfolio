@@ -21,16 +21,22 @@ type MicroLabelProps = {
  * reading as a logo. The leading matches the body text, so a tech-stack line
  * that wraps on a phone still sets on the page's rhythm.
  */
+/**
+ * The metrics on their own, without the color.
+ *
+ * A section heading inside a post wears this shape but not its faintness -- see
+ * `components/post/PostBody.tsx`, which says why. Exporting the string is what
+ * keeps the numbers in one place rather than two.
+ */
+export const MICRO_LABEL =
+  "text-[12px] uppercase leading-[1.625] tracking-[0.05em]";
+
 export default function MicroLabel({
   children,
   as: Tag = "span",
   className = "",
 }: MicroLabelProps) {
   return (
-    <Tag
-      className={`text-[12px] uppercase leading-[1.625] tracking-[0.05em] text-faint ${className}`}
-    >
-      {children}
-    </Tag>
+    <Tag className={`${MICRO_LABEL} text-faint ${className}`}>{children}</Tag>
   );
 }

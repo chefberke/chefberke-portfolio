@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { GutterNav, InlineNav } from "@/components/shared/SiteNav";
 import { rootStyle } from "@/lib/tokens";
 import { SITE_URL } from "@/lib/site";
 import "@/styles/globals.css";
@@ -140,7 +141,46 @@ export default function RootLayout({
       <body
         className={`${ioskeleyMono.variable} ${geistPixelSquare.variable} antialiased`}
       >
-        {children}
+        {/*
+         * The frame every page is written inside, and the reason it lives here
+         * rather than on the page: a layout is not re-mounted when the reader
+         * moves between pages, so the rules are drawn once, on the first load,
+         * and the gutter marker slides between pages instead of the whole frame
+         * being redrawn under it.
+         *
+         * The page is drawn as a frame rather than as a card -- one hairline
+         * across the top, one down the left margin, and nothing else. The
+         * column is centered on the window, so those two rules are the only
+         * edges the text measures itself against.
+         *
+         * On load the top rule draws out from the left, the gutter rule follows
+         * it down out of the same corner, and the column fills in under them.
+         */}
+        <div className="flex min-h-screen flex-col bg-surface">
+          <div
+            aria-hidden="true"
+            className="rule-draw-x h-px w-full shrink-0 bg-rule"
+          />
+
+          <GutterNav />
+
+          <div className="flex w-full flex-1">
+            <main className="min-w-0 flex-1 px-6 py-16 sm:px-14 sm:py-24">
+              {/* One rhythm down the whole column: every block is separated by
+                  the same 14 units, so the page has no visual hierarchy of
+                  spacing to read -- only the labels tell you where you are. */}
+              <div className="mx-auto flex w-full max-w-[620px] flex-col gap-14">
+                {/* The gutter has no room to stand in on a narrow window, so
+                    the two page names are set as a strip at the top of the
+                    column instead. It is `display: none` from `xl` up, where
+                    the gutter takes over, so only one of the two is ever in
+                    the document for a screen reader. */}
+                <InlineNav />
+                {children}
+              </div>
+            </main>
+          </div>
+        </div>
       </body>
     </html>
   );

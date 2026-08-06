@@ -1,6 +1,15 @@
 @import "tailwindcss";
 
 /*
+ * Markdown is content, not markup: no class name is ever written in a post.
+ * Tailwind scans every file in the project that is neither gitignored nor on
+ * its binary-extension list, and `.md` is on neither -- so without this it
+ * reads the prose and mints a utility out of any word that happens to look like
+ * one.
+ */
+@source not "../content";
+
+/*
  * Colors are defined in lib/tokens.ts and published as CSS variables by
  * app/layout.tsx. This file only maps them onto Tailwind utilities, so it holds
  * no hex values of its own.
@@ -30,6 +39,29 @@
 :root {
   /* Keeps scrollbars and native controls light, even in a dark-mode browser. */
   color-scheme: light;
+
+  /*
+   * Where the gutter hairline stands: one quarter of the way across the
+   * window.
+   *
+   * It is measured off the window, not off the column, and that is the whole
+   * point of it. A rule held a fixed distance from the text is a second edge
+   * of the text -- it travels with the column and the margin between them
+   * never changes, so a wide screen looks like a narrow one with more paper
+   * around it. Pinned to a quarter of the window, the rule keeps its own
+   * position on the page and the margin opens as the screen grows, which is
+   * what makes it read as the edge of the page rather than as a divider.
+   *
+   * The column here is 620px against the 672px this was taken from, so a flat
+   * 25% would walk into the text at the narrow end of the range. `min()` is
+   * the ceiling that holds the rule at least 48px clear of the column; it only
+   * binds between `xl` and about 1430px, and above that the rule is at 25%
+   * exactly.
+   *
+   * Below `xl` there is no margin left to rule at all, so the gutter is not
+   * drawn and the page names are set as a strip at the top of the column.
+   */
+  --gutter-x: min(25%, calc(50% - 358px));
 }
 
 /*
@@ -106,9 +138,17 @@ body {
   padding-bottom: 8px;
 }
 
+/*
+ * The open tab holds the rule, and so does the open page in the strip the
+ * phone layout puts at the top of the column -- a tab strip and a page strip
+ * are the same object here, so they are marked the same way. One says it with
+ * `aria-selected`, the other with `aria-current`, because that is what each of
+ * them is; both are read off the attribute rather than off a class.
+ */
 .tab-underline:hover,
 .tab-underline:focus-visible,
-.tab-underline[aria-selected="true"] {
+.tab-underline[aria-selected="true"],
+.tab-underline[aria-current="page"] {
   background-size: 100% 1px;
 }
 
@@ -180,6 +220,120 @@ body {
 .rule-draw-x {
   transform-origin: left center;
   animation: rule-draw-x 560ms cubic-bezier(0.22, 0.61, 0.36, 1) both;
+}
+
+/*
+ * The gutter rule: the second half of the frame, and the only piece of the
+ * page that is drawn twice.
+ *
+ * The base is the rule itself. It is a gradient rather than a flat color --
+ * solid for the first 45% and gone by the bottom -- so it ends by running out
+ * rather than by stopping, which is what keeps a rule that reaches no corner
+ * from reading as a cut-off border. It draws downward out of the top corner
+ * 140ms behind the top rule, so the two are read as one corner being ruled and
+ * not as two lines appearing.
+ *
+ * The shine is a single pass of light down the rule while it draws: a short
+ * gradient, blue thinned almost to white, riding just behind the drawing head
+ * and fading as it goes. It is the one thing on this site that is decoration
+ * and nothing else, so it is allowed exactly one pass -- there is no loop here
+ * and there should not be one. A rule that pulses forever is a progress bar,
+ * and nothing on this page is loading.
+ *
+ * It is 2px wide inside a 1px box that clips it, which is what softens the
+ * light against the hairline instead of letting it read as a second rule.
+ */
+.gutter-rule {
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 1px;
+  height: 64%;
+  overflow: hidden;
+}
+
+.gutter-rule__base {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    var(--rule) 0%,
+    var(--rule) 45%,
+    transparent 100%
+  );
+  transform-origin: top center;
+  animation: rule-draw-y 760ms cubic-bezier(0.22, 0.61, 0.36, 1) 140ms both;
+}
+
+.gutter-rule__shine {
+  position: absolute;
+  left: -0.5px;
+  width: 2px;
+  height: 26%;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    color-mix(in srgb, var(--link) 35%, var(--surface)) 45%,
+    color-mix(in srgb, var(--link) 55%, var(--surface)) 55%,
+    transparent 100%
+  );
+  filter: blur(0.3px);
+  animation: rule-shine-y 900ms cubic-bezier(0.22, 0.61, 0.36, 1) 200ms both;
+}
+
+/*
+ * The tick that stands beside the open page name, just inside the rule.
+ *
+ * There is one of these for the whole nav, not one per row, so switching pages
+ * slides it from the old name to the new one. Its travel is arithmetic rather
+ * than measured: every row is exactly one `--nav-row` tall, so the open row's
+ * top edge is that height times its index, and the index is the only thing the
+ * component has to hand it. Nothing is read back out of the layout.
+ *
+ * The rows are set to the same height with `h-7` in components/shared/
+ * SiteNav.tsx. These are the same number and must move together.
+ */
+.gutter-marker {
+  --nav-row: 1.75rem;
+  position: absolute;
+  right: 4px;
+  top: calc(var(--nav-index, 0) * var(--nav-row));
+  width: 2px;
+  height: var(--nav-row);
+  background: var(--link);
+  transition: top 280ms cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@keyframes rule-draw-y {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+
+/*
+ * The pass of light. It enters above the rule and leaves below it, so neither
+ * end of the travel is ever on screen, and it is brightest early -- while the
+ * rule under it is still being drawn -- then thins out to nothing.
+ */
+@keyframes rule-shine-y {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, -120%, 0);
+  }
+  18% {
+    opacity: 0.7;
+  }
+  70% {
+    opacity: 0.3;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(0, 280%, 0);
+  }
 }
 
 /*
@@ -292,31 +446,253 @@ body {
  */
 @media (prefers-reduced-motion: reduce) {
   .rule-draw-x,
+  .gutter-rule__base,
   .block-in,
   .stagger-in > * {
     animation: none;
   }
+
+  /* The rule stays; only the light that ran down it goes. It was the one thing
+     here that carried no information, so it is also the one thing that is not
+     replaced by its finished state. */
+  .gutter-rule__shine {
+    display: none;
+  }
+
+  .gutter-marker {
+    transition: none;
+  }
 }
 
 /*
- * The contribution grid is wider than the column on most screens, so it scrolls
- * on its own. A default scrollbar is far too loud next to 10px squares, so it
- * is drawn as one more hairline.
+ * Two things here are wider than the column and scroll on their own: the
+ * contribution grid, and a code block in a post. A default scrollbar is far too
+ * loud next to 10px squares or under six lines of mono type, so it is drawn as
+ * one more hairline.
  */
-.rule-scrollbar {
+.rule-scrollbar,
+.post pre {
   scrollbar-width: thin;
   scrollbar-color: var(--rule) transparent;
 }
 
-.rule-scrollbar::-webkit-scrollbar {
+.rule-scrollbar::-webkit-scrollbar,
+.post pre::-webkit-scrollbar {
   height: 6px;
 }
 
-.rule-scrollbar::-webkit-scrollbar-track {
+.rule-scrollbar::-webkit-scrollbar-track,
+.post pre::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.rule-scrollbar::-webkit-scrollbar-thumb {
+.rule-scrollbar::-webkit-scrollbar-thumb,
+.post pre::-webkit-scrollbar-thumb {
   background: var(--rule);
   border-radius: 3px;
+}
+
+/*
+ * A post.
+ *
+ * Everything above in this file dresses markup this repo wrote. This block
+ * dresses markup a markdown file wrote, so it is the one place that styles bare
+ * elements -- and it covers only what components/post/PostBody.tsx does not
+ * intercept. Links, images, headings and tables are components and carry their
+ * classes there. The line is: CSS dresses what passes through, the component
+ * map handles what is replaced.
+ *
+ * The body is a flex column with one gap, the same 5 the bio's paragraphs use,
+ * so there is no margin collapsing to reason about anywhere in a post. Headings
+ * add margin on top of that gap, which is what binds a heading to what follows
+ * it rather than leaving it stranded between two sections.
+ */
+.post {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.post p {
+  text-wrap: pretty;
+}
+
+/*
+ * Preflight sets `list-style: none` on every ul and ol, so a list arrives with
+ * no marker at all. The markers are put back rather than replaced with a
+ * pseudo-element, because `list-style: none` is also what makes VoiceOver stop
+ * announcing a list as a list.
+ *
+ * The em dash is the marker because nothing else on this page is round. Safari
+ * before 17.2 ignores a string list-style-type and falls back to a disc, which
+ * is the right thing to fail to.
+ */
+.post ul,
+.post ol {
+  padding-left: 1.75em;
+}
+
+.post ul {
+  list-style-type: "\2014  ";
+}
+
+.post ol {
+  list-style-type: decimal;
+}
+
+.post li::marker {
+  color: var(--faint);
+}
+
+.post li + li,
+.post li > ul,
+.post li > ol {
+  margin-top: 0.375rem;
+}
+
+/*
+ * A loose list wraps each item in a paragraph. The first one is the item, so it
+ * is not a block here -- it sits on the line its marker is on. An item that runs
+ * to a second paragraph keeps it a block, which is the only reason the author
+ * wrote a blank line in the middle of a list item.
+ */
+.post li > p:first-child {
+  display: inline;
+}
+
+.post li > p + p {
+  margin-top: 0.375rem;
+}
+
+/*
+ * `- [ ] item`. GFM admits it and answers with a real disabled checkbox and the
+ * two classes below. Left alone that is the browser's own blue widget, drawn on
+ * a page that has one blue in it, standing behind an em dash that is no longer
+ * saying anything the box does not.
+ *
+ * So the box becomes the marker: the list gives up its dash and its indent, and
+ * the input is redrawn as the same hairline square the code blocks and the
+ * photograph are drawn with. Checked, it fills with the one color on the page a
+ * reader is meant to act on.
+ */
+.post .contains-task-list {
+  padding-left: 0;
+}
+
+.post .task-list-item {
+  list-style-type: none;
+}
+
+.post .task-list-item input[type="checkbox"] {
+  appearance: none;
+  width: 0.75em;
+  height: 0.75em;
+  margin-right: 0.5em;
+  border: 1px solid var(--rule);
+  vertical-align: 0.02em;
+}
+
+.post .task-list-item input[type="checkbox"]:checked {
+  border-color: var(--link);
+  background-color: var(--link);
+}
+
+/*
+ * A quote is set apart by a rule, because a rule is how this page sets anything
+ * apart, and it is faint because a quote is not the page's own voice.
+ */
+.post blockquote {
+  border-left: 1px solid var(--rule);
+  padding-left: 1.25rem;
+  color: var(--faint);
+}
+
+/*
+ * Preflight gives `hr` `color: inherit` and a 1px top border, so left alone it
+ * draws in ink. It is a hairline like every other hairline here, so it is
+ * ruled.
+ */
+.post hr {
+  border-color: var(--rule);
+}
+
+/*
+ * A code block is a ruled box: the same hairline as the page frame and as the
+ * ring around the photograph in the header.
+ *
+ * The face is not set here. Preflight already points `pre` and `code` at
+ * `--default-mono-font-family`, and the `@theme inline` block at the top of
+ * this file resolves that to Ioskeley -- naming it again would be a second
+ * place to keep in step.
+ *
+ * There is no background either, because Shiki is asked not to write one:
+ * `rootStyle: false` in lib/markdown.ts drops the inline background-color and
+ * color it would otherwise put on the <pre>. If a block ever comes back
+ * wearing its own paper, that option is what moved.
+ */
+.post pre {
+  border: 1px solid var(--rule);
+  padding: 1rem 1.25rem;
+  color: var(--primary);
+  overflow-x: auto;
+  tab-size: 2;
+}
+
+/*
+ * Inline code is the same box drawn tight. Preflight holds it at 1em, so it
+ * sets on the same 14px as the sentence around it and the line does not open up
+ * to make room for it.
+ *
+ * `:not(pre) >` keeps this off the <code> Shiki puts inside every block.
+ */
+.post :not(pre) > code {
+  border: 1px solid var(--rule);
+  border-radius: 2px;
+  padding: 0.05em 0.3em;
+}
+
+/* The one photograph on the home page wears a hairline. So does every picture
+   in a post. */
+.post img {
+  border: 1px solid var(--rule);
+}
+
+/*
+ * A table is a ledger: micro labels across the top, values under them, one rule
+ * per row. It is SectionHeading laid out sideways.
+ */
+.post table {
+  width: 100%;
+  text-align: left;
+}
+
+.post th,
+.post td {
+  border-bottom: 1px solid var(--rule);
+  padding: 0.5rem 0.75rem 0.5rem 0;
+  vertical-align: top;
+}
+
+.post th {
+  font-size: 12px;
+  font-weight: inherit;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--faint);
+}
+
+/*
+ * Nothing on this page is bold -- the mono face is loaded at one weight and
+ * there is no second one to reach for. Emphasis is said in the accent color
+ * instead, the same way the bio says it, and the quieter kind is said in the
+ * quieter ink.
+ */
+.post strong {
+  font-weight: inherit;
+  color: var(--link);
+}
+
+.post em {
+  font-style: normal;
+  color: var(--faint);
 }

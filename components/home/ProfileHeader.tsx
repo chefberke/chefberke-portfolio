@@ -1,7 +1,6 @@
 import Image from "next/image";
 import MicroLabel from "@/components/shared/MicroLabel";
 import LocalTime from "@/components/home/LocalTime";
-import Star from "@/components/shared/Star";
 
 type ProfileHeaderProps = {
   name: string;
@@ -21,9 +20,9 @@ type ProfileHeaderProps = {
  * quieter introduction than a large bold one.
  *
  * On load the two columns fill in together, and both do it the same way: the
- * micro label first, then what it names. The star and the location arrive on
- * the same beat, so the top of the page reads as one line being written across
- * before anything is written under it.
+ * micro label first, then what it names. The page name and the location arrive
+ * on the same beat, so the top of the page reads as one line being written
+ * across before anything is written under it.
  */
 export default function ProfileHeader({
   name,
@@ -33,13 +32,15 @@ export default function ProfileHeader({
   return (
     <header className="flex items-start justify-between gap-4">
       <div className="flex flex-col gap-2">
-        {/* Where the `home` label used to be. It keeps the label's slot and its
-            beat -- first thing in, one step ahead of the photo -- but says it
-            as a mark instead of a word. The height of a micro label is held by
-            the line-box it sits in, so the row below does not move. */}
-        <span className="block-in flex h-[20px] items-center text-link">
-          <Star />
-        </span>
+        {/* The page says its own name, the same way every other block on the
+            site says what it is. It is the word the gutter is pointing at, so
+            the two must not disagree -- and the blog page opens with `blog` in
+            this same slot. The star that stood here for a while said the same
+            thing as a mark, but a mark cannot be read back to you; it is still
+            drawn in components/shared/Star.tsx, where the favicon takes it. */}
+        <MicroLabel as="p" className="block-in">
+          home
+        </MicroLabel>
         <div className="flex items-center gap-3">
           {/*
             The only image on the page. It runs taller than the two lines beside

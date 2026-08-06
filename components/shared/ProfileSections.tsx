@@ -32,8 +32,12 @@ export interface ProjectItem {
  * beat of the page's entry rather than the list being one. That runs on the
  * first load and again every time the tab strip swaps one list for the other;
  * see `components/shared/Tabs.tsx` for how the delay is rebased on a switch.
+ *
+ * Exported, because the blog index is the same row and should not restate the
+ * measurement. See `components/post/PostList.tsx`, which fills the two cells
+ * the other way round and says why.
  */
-const ROW = "grid gap-x-6 gap-y-2 sm:grid-cols-[13rem_minmax(0,1fr)]";
+export const ROW = "grid gap-x-6 gap-y-2 sm:grid-cols-[13rem_minmax(0,1fr)]";
 
 /* Both lists name things the same way, so the class lives in one place. */
 const NAME = "lowercase";
