@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import ReadingHead from "@/components/shared/ReadingHead";
 
 /**
  * The pages this site has.
@@ -79,11 +80,11 @@ export function GutterNav() {
       <div aria-hidden="true" className="gutter-rule">
         <div className="gutter-rule__base" />
         <div className="gutter-rule__shine" />
-        {/* On a post, the pass of light comes back and stays -- standing where
-            the reader stands, moving only when they scroll. It is mounted only
-            where it means something, so no other page carries a fixed element
-            it never shows. */}
-        {isReading(pathname) ? <div className="gutter-rule__head" /> : null}
+        {/* On a post, the pass of light comes back and stays -- travelling
+            toward where the reader stands, moving only when they scroll. It is
+            mounted only where it means something, so no other page carries a
+            fixed element it never shows, and no other page runs its loop. */}
+        {isReading(pathname) ? <ReadingHead /> : null}
       </div>
 
       <nav
