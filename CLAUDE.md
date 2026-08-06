@@ -4,6 +4,14 @@ A one-page portfolio. The page is a frame — one hairline across the top — ov
 single centered column of monospace text. Every block in that column is the same
 gesture: a micro label saying what a thing is, and the value beside or under it.
 
+Every page opens on the same line read across: what the page is on the left —
+`home`, `blog`, a post's title — and where it is written from on the right, in
+`components/shared/Whereabouts.tsx`. The location and the ticking clock are
+facts about the site, not about the page, so that component reads
+`data/profile.json` itself and nothing has to pass them down. A corner that
+answered on one page and was empty on the next would read as the clock having
+stopped rather than as it never having been asked.
+
 ## Motion
 
 There is one movement on the page and it happens once, on load: the top hairline
@@ -80,29 +88,75 @@ and it has no clock at all: on a post, the single pass of light that ran down
 the gutter rule at load comes back as `.gutter-rule__head` and stands where the
 reader stands in the piece. It moves only when the reader scrolls.
 
-It is a CSS scroll timeline — `animation-timeline: scroll(root block)` — so the
-light is placed off the main thread and nothing polls the scroll position. Three
-things hold it together and each is easy to undo:
+**The light travels toward the reader; it does not sit on them.**
+`components/shared/ReadingHead.tsx` closes 14% of the remaining distance every
+frame and stops when it arrives, so the head eases out of every start and into
+every stop on its own.
 
-- **It is written as longhands, never the `animation:` shorthand.** The
-  shorthand resets `animation-timeline` to `auto`, which silently turns it back
-  into a timed animation that plays through once.
-- **`animation-duration: auto`.** On a scroll timeline that spreads the
-  keyframes over the whole scroll, which is the only thing that makes 100% mean
-  the end of the post. The easing is `linear` for the same reason — any curve
-  puts the light where the reader is not.
-- **It thins as it descends**, because the rule it rides is a gradient that is
-  gone by the bottom. A light brighter than its line comes loose and floats.
+That easing is the whole point, and it is what the first version got wrong. A
+scroll is not smooth — a wheel is notches, a keypress is a jump — and a light
+pinned to the scroll position inherits every one of them as a step. Something
+always moving toward the reader turns that same stuttery input into one
+continuous glide.
 
-The whole block sits inside `@supports (animation-timeline: scroll())`, and the
-element's own style is `opacity: 0`. A browser without scroll timelines, and a
-post too short to scroll, both get the page exactly as it is otherwise drawn.
+This was a CSS scroll timeline, which was off the main thread and polled
+nothing. It was replaced because it is _exact_: an animation cannot be eased
+toward its own timeline, so there is no way to ask a scroll timeline for lag.
+The trade is one custom property on one element per frame — and only while the
+light is still catching up.
+
+Everything else is a function of that one number, `--head-at`, from 0 to 1:
+
+- **`transform` is `--head-at × 190%`**, which is where the rule runs out.
+- **Opacity is the lower of two limits** — the light coming up out of nothing in
+  the first breath of scroll, and it thinning the whole way down. They cross at
+  about 6%. It thins because the rule it rides is a gradient that is gone by the
+  bottom, and a light brighter than its line comes loose and floats.
+- **`--head-at` starts at 0**, so a post too short to scroll, and a page where
+  the script has not run, are both exactly the page as it is otherwise drawn.
+
+Two things keep the main-thread work honest, and both are easy to undo: the loop
+is not the scroll listener — the listener reads one number and starts the loop
+only if it is not already running — and the listener is `passive`, so it can
+never delay the scroll it is watching.
 
 `SiteNav` mounts it on `/blog/<slug>` only. A page must be one long thing read
 top to bottom before "where you are in it" is worth answering in the margin.
 
-Every animation is turned off under `prefers-reduced-motion: reduce`. A new one
-belongs in that list too.
+### Stillness
+
+Nothing on this site moves when motion is not wanted, and there is no list of
+selectors saying so. `--motion` is a number every duration on the page is
+multiplied by:
+
+```css
+:root {
+  --motion: 1;
+}
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion: 0;
+  }
+}
+:root[data-motion="still"] {
+  --motion: 0;
+}
+```
+
+At `0` every animation runs for no time and its `both` fill leaves the element
+on its last keyframe — the page arrives finished. **A new animation is made
+still by writing its duration the way the others are written:**
+`calc(380ms * var(--motion))`, delays included. Nothing has to be remembered
+twice.
+
+It is a multiplier and not a second block of rules because stillness is asked
+for in two ways CSS cannot join into one selector — a media query and an
+attribute — and the reading panel adds the second one.
+
+The reading head is the exception, and the only one: it has no duration at all —
+it is a position. So it multiplies its own `opacity` by `--motion` and never
+lights, and its script reads the same variable and never starts. Same gate,
+whatever the thing being gated is.
 
 ## Colors: tokens only, never hex
 
@@ -164,16 +218,79 @@ both loaded through `next/font/local` so there is no third-party request.
 - **Geist Pixel Square** (`font-pixel`) sets exactly one string: the name in the
   header. It is a display face — do not use it for anything else.
 
-Only two steps exist below the body size and one above it:
+There are exactly three sizes — one step below the body size and one above —
+and, like the colors, they are named rather than written out:
 
-| Use         | Spec                                                |
-| ----------- | --------------------------------------------------- |
-| body        | 14px / 1.625 — inherited, so do not restate it      |
-| micro label | `MicroLabel` — 12px, uppercase, `tracking-[0.05em]` |
-| the name    | `font-pixel`, 18px, `tracking-[-0.025em]`           |
+| Use         | Class        | Spec                                      |
+| ----------- | ------------ | ----------------------------------------- |
+| body        | inherited    | 14px / 1.625 — do not restate it          |
+| micro label | `text-micro` | 12px, uppercase, `tracking-[0.05em]`      |
+| the name    | `text-name`  | 18px, `font-pixel`, `tracking-[-0.025em]` |
 
 Anything that is metadata goes through `components/shared/MicroLabel.tsx` rather
 than restating those classes, so the label style stays in one place.
+
+**Never write a px size in markup.** The three classes come from `--type-micro`,
+`--type-body` and `--type-name` in `styles/globals.css`, and all three are the
+number times `--type-scale` — which the reading panel moves. A hard-coded
+`text-[12px]` is a line that stays behind when a reader enlarges the page.
+
+The scale is on the type sizes and not on the root `font-size`, because Tailwind
+builds every spacing utility out of `0.25rem`: moving the root would take the
+padding, the gaps and the hairlines with it. That is a zoom. This grows the
+words and leaves the page they are written on where it is.
+
+## The reading panel
+
+One faint line stuck in the bottom-right corner of every page — `I wonder what
+this button does 🤔` — and three preferences behind it. It is drawn as a
+sentence, not as a control: there is no icon, no tile and no button box anywhere
+else on this site, and one pinned to a corner would be the loudest object on the
+page.
+
+**Not on a phone.** Below `sm` it is not drawn at all. A line pinned to the
+corner of a small window is standing on the page rather than beside it — it
+lands on the footer and on the last line of whatever is being read. The width
+where the gutter gives up its rules is the width where this gives up its corner.
+
+`components/shared/ReaderPanel.tsx` is the whole of it, mounted in the layout so
+it is not re-announced on every navigation. The panel is a native `<dialog>`
+opened with `showModal()` — focus trap, Escape, inert background and restored
+focus, for one method call and no library. Its `::backdrop` is turned off and
+the scrim is a plain element inside it, because a backdrop does not reliably
+inherit the color tokens the site is drawn from.
+
+| Row         | Choices                | Writes                             |
+| ----------- | ---------------------- | ---------------------------------- |
+| `type size` | small · medium · large | `--type-scale` on the root element |
+| `measure`   | narrow · wide          | `data-measure="wide"`              |
+| `motion`    | on · off               | `data-motion="still"`              |
+
+The choices are words, not the numbers behind them. A reader choosing how to
+read is not setting a value, and `16` is a fact about the page that means
+nothing until you have seen it. Every other label on this site names a thing
+rather than measuring it. The px each word stands for is in `lib/reading.ts`,
+which is where a fourth step goes.
+
+Three things hold it together:
+
+- **The document is the record.** Nothing keeps a second copy of these — the
+  panel reads them back off the root element when it opens.
+- **They are applied before the first paint.** `lib/reading.ts` names the keys
+  once and exports the blocking inline script the layout writes into `<head>`.
+  Every page here is prerendered at the site's own size, so a preference read
+  after hydration is a page the reader watches arrive at 14px and then jump.
+  That script is also why `<html>` carries `suppressHydrationWarning`: it writes
+  three things onto that tag before React runs, so the tag React hydrates is not
+  the tag the server sent, and only the browser can know what they should be.
+  The attribute reaches that element and one level down — nothing in the page.
+- **Each attribute is only ever set, never set to its default.** That is what
+  makes the motion switch one-way: nothing writes `data-motion="full"`, so a
+  reader whose system asks for less motion keeps it whichever way they leave the
+  switch, and the row says so instead of drawing choices it cannot honor.
+
+A fourth preference is one more `OptionRow`, its choices in `lib/reading.ts`
+beside the others, and a `:root[data-…]` rule for its value to land in.
 
 ## Content
 
@@ -226,12 +343,12 @@ in `public/`.
 Markdown has six levels and this site has three type sizes, none of them spare.
 So the levels are told apart on case, size and color — three axes, no new type:
 
-| Level      | Form                                            |
-| ---------- | ----------------------------------------------- |
-| `##`       | 12px, uppercase, **`text-primary`**, `mt-9`     |
-| `###`      | 14px, lowercase, `text-faint`, `mt-4`           |
-| `####`+    | drawn as `###` — there is no fourth appearance  |
-| `#`        | refused; the `h1` is the post title             |
+| Level   | Form                                           |
+| ------- | ---------------------------------------------- |
+| `##`    | 12px, uppercase, **`text-primary`**, `mt-9`    |
+| `###`   | 14px, lowercase, `text-faint`, `mt-4`          |
+| `####`+ | drawn as `###` — there is no fourth appearance |
+| `#`     | refused; the `h1` is the post title            |
 
 `##` is the one micro label on the site that is not faint. A label naming a
 _value_ is about the content, so it stands back; a label naming a _section_ is
