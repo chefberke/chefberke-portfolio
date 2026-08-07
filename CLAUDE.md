@@ -484,8 +484,24 @@ Three things follow from it, and each one is a line somewhere:
   the file and reserves its box, which is the half of it this site uses. The
   consequence: **an image belongs in `public/` at roughly the size it is read
   at**, because the whole file is now what ships.
-- **`public/_headers` types the files that have no extension.** Pages reads
+- **`public/_headers` is everything the site can say in a header.** There is no
+  server, so the file carries two jobs. A `/*` block at the top sets the security
+  headers — CSP, HSTS, `nosniff`, `Referrer-Policy`, `X-Frame-Options` and COOP —
+  and the four rules under it type the files that have no extension. Pages reads
   a file's type off its name, and Next names a metadata image after its route —
   `out/icon`, `out/opengraph-image`. Untyped they go out as
   `application/octet-stream`: a favicon no browser draws, a card no scraper
-  opens. Add a page with a card, add its two lines there.
+  opens. Pages applies every matching block, so the two jobs do not collide. Add
+  a page with a card, add its two lines there.
+
+  The CSP is holding up two things described above, and tightening it breaks
+  them. `script-src` keeps `'unsafe-inline'` because the boot script in
+  `app/layout.tsx` is inline and blocking by design, and a static export has no
+  request to mint a nonce on. A hash list is no way out either: most of the
+  inline scripts in a built page are Next's own RSC payload, whose contents
+  change with the page and with every build, so the list would have to be written
+  back into this file after each one. `style-src` keeps it for the token `<style>`
+  on the line above the script. What stands between this site and injected script
+  is therefore not `script-src` — it is `default-src 'none'` and the four
+  directives under it, which mean a script that does get in still cannot reach a
+  third party, rewrite the base URL, post a form, or be framed.

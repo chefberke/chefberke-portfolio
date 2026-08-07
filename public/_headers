@@ -1,10 +1,44 @@
+# There is no server at the other end of this build, so this file is the whole
+# of what the site can say about itself in a header. Everything here is set on
+# `/*` and every rule below adds to it -- Pages applies each matching block, and
+# the four type rules name a header this one does not.
+#
+# The one directive that is weaker than it looks is `script-src`. A static
+# export cannot carry a nonce, since there is no request to mint one on, and it
+# cannot carry a hash list either: the fourteen inline scripts in a built page
+# are mostly Next's own RSC payload, whose contents change with the page and
+# with every build. A hash list would have to be regenerated into this file
+# after each build or the site would refuse to run itself. So CSP is not the
+# thing standing between this site and injected script -- that is `default-src
+# 'none'` and the four directives under it, which mean an injected script can
+# still not reach a third party, rewrite the base URL, post a form, or be framed
+# by anyone.
+#
+# Everything the built pages load is same-origin: the chunks and the CSS under
+# `/_next/static`, the two vendored woff2 files, one jpg and the icon. There is
+# no form, no iframe, no third-party host, and no runtime fetch anywhere on the
+# site, which is why `connect-src 'self'` costs nothing.
+#
+# `Strict-Transport-Security` deliberately carries neither `includeSubDomains`
+# nor `preload`. Both are close to irreversible for the length of the max-age,
+# and a subdomain added later and served over plain HTTP would be unreachable
+# with no obvious reason why. Add them when there is a subdomain to check.
+
+/*
+  Content-Security-Policy: default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; object-src 'none'; upgrade-insecure-requests
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Frame-Options: DENY
+  Cross-Origin-Opener-Policy: same-origin
+  Strict-Transport-Security: max-age=63072000
+
 # Cloudflare Pages types a file by its extension, and the four routes below are
 # the only files in the build that do not have one: Next names a metadata image
 # after its route, so they are written as `out/icon` and `out/opengraph-image`.
 # Untyped they go out as application/octet-stream, which is a favicon a browser
 # will not draw and a card no scraper will open.
 #
-# Nothing else needs a line here. Every other file in `out/` is a `.html`, a
+# Nothing else needs a type line. Every other file in `out/` is a `.html`, a
 # `.png`, a `.txt` or a `.xml` and says so in its name.
 #
 # `:slug` matches one path segment, which is the shape of the post cards. A
