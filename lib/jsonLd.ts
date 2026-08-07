@@ -16,6 +16,27 @@ import { SITE_URL } from "@/lib/site";
  * keep the two in step is to give them one source.
  */
 
+/**
+ * A graph, written out for the one place it is ever put: inside a `<script>`.
+ *
+ * `JSON.stringify` escapes what JSON needs escaped -- quotes and backslashes --
+ * and `<` is not one of them. So a string anywhere in the graph holding
+ * `</script>` closes the tag it is sitting in, and everything after it is read
+ * by the HTML parser as markup rather than as data. The values here are written
+ * in this repository rather than sent by anyone, which makes that a typo away
+ * rather than an attack away, and the typo is not a strange one: a post about
+ * HTML that quotes a closing tag, or writes `<!--`, is enough to break the rest
+ * of the document's parse for good.
+ *
+ * `<` is the same character to anything reading the JSON and nothing at
+ * all to the HTML tokenizer, so the structured data a crawler sees is
+ * unchanged. Both scripts on the site go through here -- this graph on the home
+ * page, and `lib/postJsonLd.ts` on a post.
+ */
+export function safeJson(value: unknown): string {
+  return JSON.stringify(value).replace(/</g, "\\u003c");
+}
+
 /** "Izmir, Turkiye" -> "Izmir". The country is fixed below. */
 const locality = profile.location.split(",")[0].trim();
 

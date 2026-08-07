@@ -5,6 +5,7 @@ import PostHeader from "@/components/post/PostHeader";
 import SiteFooter from "@/components/home/SiteFooter";
 import { markdownToHast } from "@/lib/markdown";
 import { getPost, getPostSlugs } from "@/lib/posts";
+import { safeJson } from "@/lib/jsonLd";
 import { postJsonLd } from "@/lib/postJsonLd";
 
 /**
@@ -76,7 +77,7 @@ export default async function Post({ params }: PageProps<"/blog/[slug]">) {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(postJsonLd(post.meta)),
+          __html: safeJson(postJsonLd(post.meta)),
         }}
       />
 

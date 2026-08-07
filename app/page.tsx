@@ -11,7 +11,7 @@ import {
   ProjectList,
 } from "@/components/shared/ProfileSections";
 import SiteFooter from "@/components/home/SiteFooter";
-import { jsonLd } from "@/lib/jsonLd";
+import { jsonLd, safeJson } from "@/lib/jsonLd";
 
 // const GITHUB_LOGIN = "chefberke";
 
@@ -47,7 +47,7 @@ export default function Home() {
           out nothing. */}
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: safeJson(jsonLd) }}
       />
 
       <div className="[--enter-delay:40ms]">
