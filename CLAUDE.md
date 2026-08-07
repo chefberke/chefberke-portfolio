@@ -370,13 +370,23 @@ draft: false # optional
 **A malformed post fails the build and the message names the file.** A missing
 `title`, `description` or `date`, a `date` that is not exactly `2026-08-06`, a
 `draft` that is not `true` or `false`, a slug that is not
-`lowercase-and-hyphens`, a `#` heading, or an image path that is not under
-`public/` and written from the root. This is the opposite
+`lowercase-and-hyphens`, a `#` heading, an image path that is not under
+`public/` and written from the root, or a frontmatter block written in anything
+but YAML. This is the opposite
 of `lib/github.ts`, which swallows its failures — and deliberately so. That file
 parses a shape GitHub can change without warning; a post is yours, and a missing
 field is a typo you made a minute ago. To leave a post out on purpose, mark it
 `draft: true`: drafts are readable at their own URL in `bun dev` and absent from
 the index, the sitemap and the build.
+
+The last of those is not a house rule about consistency. `gray-matter` dispatches
+on whatever word is written after the opening `---`, and one of the languages it
+will dispatch to is JavaScript — an engine that is a literal `eval`. A file
+beginning `---js` is then not a document with a header on it, it is a program,
+and it runs with the build's own reach before any of the checks above have looked
+at it. So `lib/posts.ts` names that engine and `json` beside it and replaces both
+with a refusal: the only header a post may carry is the one written above, and
+every other language `gray-matter` knows a name for was unregistered already.
 
 ### The pipeline
 

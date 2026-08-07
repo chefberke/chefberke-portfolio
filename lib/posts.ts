@@ -167,6 +167,38 @@ function assertHeadings(body: string, file: string): void {
   }
 }
 
+/**
+ * Frontmatter is YAML, and gray-matter has to be told so.
+ *
+ * Left to its defaults it dispatches on whatever word is written after the
+ * opening `---`, and one of the languages it will dispatch to is JavaScript --
+ * an engine that is a literal `eval`. A file beginning `---js` is then not a
+ * document with a header on it, it is a program, and it runs with the build's
+ * own reach before a single check in this file has looked at it. That is a
+ * post's header executing `child_process`, which is not a thing a post's header
+ * should be able to spell.
+ *
+ * `js` and `javascript` both resolve to the one entry replaced here, so the
+ * alias is closed along with the name. `json` is replaced too -- it is only
+ * `JSON.parse` and nothing about it is unsafe, but a header has one form on
+ * this site, and a second accepted form is a second thing to remember. Every
+ * other language gray-matter knows a name for is unregistered already and
+ * throws on its own.
+ *
+ * It is refused by name, in the voice the rest of this file refuses things in,
+ * rather than parsed as YAML anyway: a header written as JavaScript is not a
+ * header with a typo in it, it is a file that was expecting to be run.
+ */
+function yamlOnly(file: string) {
+  const refuse = (): never => {
+    throw new Error(
+      `content/posts/${file}: frontmatter has to be YAML. Open it with "---" and nothing written after it.`
+    );
+  };
+
+  return { engines: { javascript: refuse, json: refuse } };
+}
+
 function readPost(file: string): Post {
   const slug = file.replace(/\.md$/, "");
 
@@ -176,7 +208,10 @@ function readPost(file: string): Post {
     );
   }
 
-  const { data, content } = matter(readFileSync(path.join(POSTS_DIR, file), "utf8"));
+  const { data, content } = matter(
+    readFileSync(path.join(POSTS_DIR, file), "utf8"),
+    yamlOnly(file)
+  );
   const date = toIsoDate(data.date);
 
   if (!date) {
