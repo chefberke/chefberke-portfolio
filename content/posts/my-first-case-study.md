@@ -2,7 +2,7 @@
 title: My first case study
 description: I had never done a case study and did not know how, so I started anyway.
 date: 2026-08-23
-draft: true
+draft: false
 ---
 
 A case study brief came in. I had never done one.
