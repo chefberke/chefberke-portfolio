@@ -4,9 +4,10 @@ import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import remarkRehype from "remark-rehype";
 import { unified } from "unified";
-import type { BuiltinLanguage } from "shiki";
+import type { BuiltinLanguage, LanguageRegistration } from "shiki";
 import type { Root } from "hast";
 import { codeTheme } from "@/lib/codeTheme";
+import { noteGrammar } from "@/lib/noteGrammar";
 import { rehypeImageSize } from "@/lib/rehypeImageSize";
 
 /**
@@ -38,8 +39,12 @@ import { rehypeImageSize } from "@/lib/rehypeImageSize";
  * about two hundred of them -- and the ten here are the ones this site is
  * written in. An unknown language falls back to plain text rather than failing
  * the build, since a post is not worth breaking a deploy over.
+ *
+ * `note` is the one that is not a programming language. It is this site's own,
+ * for lists and bars drawn in text -- see `lib/noteGrammar.ts`.
  */
-const LANGS: BuiltinLanguage[] = [
+const LANGS: Array<BuiltinLanguage | LanguageRegistration> = [
+  noteGrammar,
   "ts",
   "tsx",
   "js",

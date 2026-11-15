@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="620" height="160" viewBox="0 0 620 160" shape-rendering="crispEdges">
+  <!-- Colors are palette.rule and palette.blue from lib/tokens.ts. An image file cannot read the page's CSS, so they are copied here by hand. -->
+  <rect x="0.5" y="0.5" width="159" height="159" fill="none" stroke="#e3e1da" vector-effect="non-scaling-stroke"/>
+  <rect x="201.5" y="39.5" width="120" height="120" fill="none" stroke="#e3e1da" vector-effect="non-scaling-stroke"/>
+  <rect x="363.5" y="73.5" width="86" height="86" fill="none" stroke="#e3e1da" vector-effect="non-scaling-stroke"/>
+  <rect x="491.5" y="103.5" width="56" height="56" fill="none" stroke="#e3e1da" vector-effect="non-scaling-stroke"/>
+  <rect x="589.5" y="129.5" width="30" height="30" fill="#2200ff" stroke="#2200ff" vector-effect="non-scaling-stroke"/>
+</svg>
