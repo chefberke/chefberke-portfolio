@@ -848,6 +848,28 @@ body {
   border: 1px solid var(--rule);
 }
 
+/* A drawing is not a photograph. It is made of the page's own hairlines, so a
+   frame around it would be one hairline too many.
+
+   It also spans the column whatever the column is. The file is drawn at 620,
+   the narrow measure, and `next/image` writes that number onto the tag -- so
+   left alone, a reader who widens the page gets a picture that stops 140px
+   short of the text around it. A vector loses nothing by being stretched, and
+   its strokes are `non-scaling-stroke`, so the lines stay one pixel. */
+.post img[src$=".svg"] {
+  border: 0;
+  width: 100%;
+  height: auto;
+}
+
+/* A captioned image: the picture, then one micro label under it, at the same
+   distance a label keeps from its value everywhere else. */
+.post figure {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
 /*
  * A table is a ledger: micro labels across the top, values under them, one rule
  * per row. It is SectionHeading laid out sideways.

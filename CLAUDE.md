@@ -431,6 +431,28 @@ An image is written `![alt](/images/blog/x.png)` and nothing more. The build
 measures the file and passes the real dimensions to `next/image`, so the column
 reserves the right height before the picture loads.
 
+### Small pictures between paragraphs
+
+Two ways, and the first is almost always enough:
+
+- **A ```` ```note ```` block** is a list or a bar drawn in text, in the same
+  mono face as the prose. `lib/noteGrammar.ts` colors five glyphs with scopes
+  the code theme already has: `?` at a line start and `[ ]` and `░` faint,
+  `[x]` and `█` blue. Everything else is ink. No file, no new color.
+- **A drawing** is an SVG in `public/images/blog/<slug>/`, written
+  `![alt](/images/blog/<slug>/x.svg "caption")`. The title becomes a micro
+  label under it in a `<figure>`; the alt stays a description for someone who
+  cannot see it. An SVG carries no frame, because it is drawn in the page's own
+  hairlines. It cannot read the page's CSS, so its colors are `palette` values
+  copied in by hand, and the file says so in a comment. Use `rule` for lines
+  and `blue` for the one thing that matters, nothing else. Draw it 620 wide,
+  edge to edge, and give every stroke `vector-effect="non-scaling-stroke"`:
+  `.post` stretches an SVG to whatever the column is -- a phone, or 760 when a
+  reader picks `wide` -- and that keeps the lines at one pixel while it does.
+
+One or two per post. Each one is a pause in the reading, and a post with one
+between every section has stopped being read.
+
 ### Styling
 
 `.post` in `styles/globals.css` is the one place in the repo that styles bare

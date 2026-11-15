@@ -1,7 +1,7 @@
 type MicroLabelProps = {
   children: React.ReactNode;
   /** Renders as a different element, so a heading can still be an h2. */
-  as?: "span" | "p";
+  as?: "span" | "p" | "figcaption";
   className?: string;
 };
 

@@ -4,7 +4,7 @@ import { Fragment, jsx, jsxs } from "react/jsx-runtime";
 import { toJsxRuntime, type Components } from "hast-util-to-jsx-runtime";
 import type { Element, Root } from "hast";
 import ArrowLink from "@/components/shared/ArrowLink";
-import { MICRO_LABEL } from "@/components/shared/MicroLabel";
+import MicroLabel, { MICRO_LABEL } from "@/components/shared/MicroLabel";
 
 /**
  * The body of a post.
@@ -191,17 +191,25 @@ const components: Partial<Components> = {
    * An image with no measurements is one this build could not read -- a remote
    * one -- so it is left as a plain tag rather than handed to a loader that
    * cannot size it.
+   *
+   * A title is a caption. `![alt](/x.svg "what it shows")` comes out as a
+   * figure with the title under it as a micro label, because a drawing between
+   * two paragraphs needs one line saying what it is and markdown has no other
+   * place to write it. The alt stays the alt: it describes the picture to
+   * someone who cannot see it, the caption names it for someone who can. A
+   * lone image is already out of its paragraph by now (`lib/rehypeImageSize.ts`),
+   * so the figure is not a block inside a `p`.
    */
-  img: ({ node, src, alt, width, height, ...props }) => {
+  img: ({ node, src, alt, width, height, title, ...props }) => {
     const w = toNumber(width);
     const h = toNumber(height);
 
     if (typeof src !== "string" || w === undefined || h === undefined) {
       // eslint-disable-next-line @next/next/no-img-element
-      return <img {...props} src={src} alt={alt ?? ""} />;
+      return <img {...props} src={src} alt={alt ?? ""} title={title} />;
     }
 
-    return (
+    const image = (
       <Image
         src={src}
         alt={alt ?? ""}
@@ -210,6 +218,15 @@ const components: Partial<Components> = {
         quality={90}
         sizes="(min-width: 40rem) 620px, 100vw"
       />
+    );
+
+    if (!title) return image;
+
+    return (
+      <figure>
+        {image}
+        <MicroLabel as="figcaption">{title}</MicroLabel>
+      </figure>
     );
   },
 
