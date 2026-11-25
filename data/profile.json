@@ -4,11 +4,20 @@
   "title": "Full Stack Developer",
   "experiences": [
     {
+      "company": "EatBetter",
+      "roles": [
+        {
+          "title": "Full Stack Developer",
+          "date": "Aug 2026 - Present"
+        }
+      ]
+    },
+    {
       "company": "Mavera Technology",
       "roles": [
         {
           "title": "Full Stack Developer",
-          "date": "Sep 2025 - Present"
+          "date": "Sep 2025 - Aug 2026"
         },
         {
           "title": "Full Stack Developer Intern",

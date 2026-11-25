@@ -5,7 +5,7 @@ import Highlight from "@/components/shared/Highlight";
  * appears inside a sentence rather than beside one.
  *
  * Only the first paragraph carries any color, because only the first paragraph
- * names things -- the two places the work happened. The second one is a
+ * names things -- the place the work happens. The second one is a
  * statement of how the work is done and has nothing in it to pick out; putting
  * a highlight on a phrase there would turn the accent into emphasis, which is
  * not what it means anywhere else on the page.
@@ -46,25 +46,20 @@ export default function AboutSection() {
           Then the two things justification makes worse rather than better,
           both stopped in the markup below:
 
-          - A hyphen is a break opportunity, so "next-generation" was being
-            cut into "next-" and "generation". The three hyphenated compounds
-            are wrapped in `whitespace-nowrap` and stay whole.
-          - A one-letter word at the end of a line ("Turkiye. I" / "on a") is
+          - A hyphen is a break opportunity, so "production-ready" would be
+            cut into "production-" and "ready". Every hyphenated compound
+            is wrapped in `whitespace-nowrap` and stays whole.
+          - A one-letter word at the end of a line ("Turkiye. I" / "where I") is
             the fault a stretched line shows off most. Every "I" and "a" is
             bound to the word after it with `&nbsp;`, which is the same
             character to a reader and an unbreakable one to the browser. */}
       <div className="stagger-in flex flex-col gap-5 text-pretty text-justify">
         <p>
           I&apos;m Berke, a&nbsp;Full Stack Software Developer based in Izmir,
-          Turkiye. I&nbsp;currently work at{" "}
-          <Highlight>Mavera Technology</Highlight>, where I&nbsp;build web and
-          mobile products from idea to production. Before that, I&nbsp;worked on
-          a&nbsp;<span className="whitespace-nowrap">next-generation</span>{" "}
-          <Highlight>
-            <span className="whitespace-nowrap">e-commerce</span> platform
-          </Highlight>
-          , helping turn product ideas and designs into{" "}
-          <span className="whitespace-nowrap">production-ready</span> features.
+          Turkiye. I&nbsp;currently work at <Highlight>EatBetter</Highlight>,
+          where I&nbsp;design and build mobile and web products, from the first
+          sketch to <span className="whitespace-nowrap">production-ready</span>{" "}
+          features.
         </p>
         <p>
           I enjoy building products that solve real problems and continue to
