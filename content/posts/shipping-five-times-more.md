@@ -42,7 +42,7 @@ start from there.
 
 ## Thanks
 
-To Ali Boyacı and Murat Yaşar, the people I ship with every day. These numbers
+To Ali Boyacı, Murat Yaşar and Can Tanguner, the people I ship with every day. These numbers
 are ours, not mine.
 
 Thank you for answering my questions at any hour, for fixing what I broke without
