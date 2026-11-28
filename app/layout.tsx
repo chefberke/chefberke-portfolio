@@ -4,7 +4,12 @@ import { GutterNav, InlineNav } from "@/components/shared/SiteNav";
 import ReaderPanel from "@/components/shared/ReaderPanel";
 import { rootStyle } from "@/lib/tokens";
 import { BOOT_SCRIPT } from "@/lib/reading";
-import { SITE_URL } from "@/lib/site";
+import {
+  FEED_ALTERNATE,
+  OPEN_GRAPH_BASE,
+  SITE_URL,
+  TWITTER_BASE,
+} from "@/lib/site";
 import "@/styles/globals.css";
 
 /**
@@ -79,12 +84,12 @@ export const metadata: Metadata = {
   ],
   alternates: {
     canonical: "/",
+    types: FEED_ALTERNATE,
   },
   openGraph: {
+    ...OPEN_GRAPH_BASE,
     type: "website",
-    locale: "tr_TR",
     url: "/",
-    siteName: "Berke Kanber",
     title: "Berke Kanber | Full Stack Developer",
     description:
       "Berke Kanber is a full stack developer in Izmir, Turkiye. He builds web and mobile products from idea to production, and keeps improving them after they ship.",
@@ -99,13 +104,10 @@ export const metadata: Metadata = {
      */
   },
   twitter: {
-    card: "summary_large_image",
+    ...TWITTER_BASE,
     title: "Berke Kanber | Full Stack Developer",
     description:
       "Berke Kanber is a full stack developer in Izmir, Turkiye. He builds web and mobile products from idea to production, and keeps improving them after they ship.",
-    // The handle as it is on X -- and as the footer links to it. A card
-    // attributed to an account that does not exist is dropped, not guessed at.
-    creator: "@chef_berke",
     // Same reason as above. With no `twitter-image` file on any route, Next
     // points `twitter:image` at the same per-segment card.
   },

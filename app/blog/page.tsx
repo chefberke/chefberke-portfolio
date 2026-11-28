@@ -4,6 +4,7 @@ import PostList from "@/components/post/PostList";
 import Whereabouts from "@/components/shared/Whereabouts";
 import SiteFooter from "@/components/home/SiteFooter";
 import { getPostList } from "@/lib/posts";
+import { FEED_ALTERNATE, OPEN_GRAPH_BASE, TWITTER_BASE } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Blog",
@@ -11,20 +12,23 @@ export const metadata: Metadata = {
     "Notes by Berke Kanber on what he is building: the things this site is made of, and whatever he happens to be working on at the time.",
   alternates: {
     canonical: "/blog",
+    types: FEED_ALTERNATE,
   },
   openGraph: {
+    ...OPEN_GRAPH_BASE,
     type: "website",
     url: "/blog",
     title: "Blog | Berke Kanber",
     description:
       "Notes by Berke Kanber on what he is building: the things this site is made of, and whatever he happens to be working on at the time.",
   },
-  // Next merges metadata field by field, not object by object, so a page that
-  // sets `openGraph` and stops keeps the root layout's `twitter` whole -- and
-  // this page's card would go out titled and described as the home page. Every
-  // other route that names one names both.
+  // Next merges metadata key by key, not field by field, so a page that sets
+  // `openGraph` and stops keeps the root layout's `twitter` whole -- and this
+  // page's card would go out titled and described as the home page. Every
+  // other route that names one names both, and spreads in the site's half from
+  // `lib/site.ts`.
   twitter: {
-    card: "summary_large_image",
+    ...TWITTER_BASE,
     title: "Blog | Berke Kanber",
     description:
       "Notes by Berke Kanber on what he is building: the things this site is made of, and whatever he happens to be working on at the time.",

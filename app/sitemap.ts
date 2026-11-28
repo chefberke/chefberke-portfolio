@@ -7,16 +7,27 @@ import { SITE_URL } from "@/lib/site";
 export const dynamic = "force-static";
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  const posts = getPostList();
+
   return [
+    /*
+     * No `lastModified` on the home page. The only date there is to give it is
+     * the build's, and a page stamped as changed on every deploy teaches a
+     * crawler that this site's dates mean nothing -- including the true ones on
+     * the posts below. Leaving it out says nothing rather than something false.
+     */
     {
       url: `${SITE_URL}/`,
-      lastModified: new Date(),
       changeFrequency: "weekly",
       priority: 1,
     },
+    /*
+     * The shelf changes when a note is added to it, so its date is the newest
+     * note's. `getPostList` is newest first.
+     */
     {
       url: `${SITE_URL}/blog`,
-      lastModified: new Date(),
+      ...(posts[0] && { lastModified: new Date(posts[0].date) }),
       changeFrequency: "weekly",
       priority: 0.5,
     },
@@ -26,10 +37,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
      *
      * `yearly`, unlike the two pages above it: a note is written once and then
      * stands, and telling a crawler it changes every week is the same kind of
-     * mismatch lib/site.ts warns about. The date is the post's own, not the
+     * mismatch as the build date above. The date is the post's own, not the
      * build's, so rebuilding the site does not claim every note was rewritten.
      */
-    ...getPostList().map((post) => ({
+    ...posts.map((post) => ({
       url: `${SITE_URL}/blog/${post.slug}`,
       lastModified: new Date(post.date),
       changeFrequency: "yearly" as const,
