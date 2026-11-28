@@ -1,6 +1,5 @@
 import { ImageResponse } from "next/og";
-import { tokens } from "@/lib/tokens";
-import { Card, CARD_SIZE, MICRO, cardFonts } from "@/lib/ogCard";
+import { Card, CARD_SIZE, cardFonts } from "@/lib/ogCard";
 import { getPostList } from "@/lib/posts";
 
 export const size = CARD_SIZE;
@@ -10,49 +9,24 @@ export const dynamic = "force-static";
 export const contentType = "image/png";
 
 /**
- * The shelf's card.
+ * The shelf's card: the shelf's own line, and a count under it.
  *
- * It exists because the frame now says which page it is standing for: without
- * a card of its own, `/blog` would share the home page's, and the gutter on it
- * would point at `home` while the reader was being shown the blog. One file is
- * cheaper than a frame that can lie.
- *
- * It carries the shelf's own line and a count under it, which is the only thing
- * this page has that the post cards do not -- and the count is read at build
- * time from the same folder the index is, so it cannot drift from the list.
+ * The count is the one thing this page has that the post cards do not, and it
+ * is read at build time from the same folder the index is, so it cannot drift
+ * from the list.
  */
 export default async function BlogOpenGraphImage() {
-  const [fonts, posts] = await Promise.all([
-    cardFonts(),
-    Promise.resolve(getPostList()),
-  ]);
+  const fonts = await cardFonts();
+  const count = getPostList().length;
 
   return new ImageResponse(
-    (
-      <Card page="blog">
-        <div
-          style={{
-            display: "flex",
-            fontSize: 52,
-            lineHeight: 1.25,
-            color: tokens.primary,
-          }}
-        >
-          {posts.length > 0
-            ? "Notes on what I am building."
-            : "Nothing published yet."}
-        </div>
-        {posts.length > 0 ? (
-          <div style={{ display: "flex", marginTop: 34 }}>
-            {/* One string, not a number beside a word. Satori counts JSX
-                children, and a box holding two of them has to declare a
-                display -- so a label that interpolates is written as one. */}
-            <div style={MICRO}>
-              {`${posts.length} ${posts.length === 1 ? "note" : "notes"}`}
-            </div>
-          </div>
-        ) : null}
-      </Card>
+    count > 0 ? (
+      <Card
+        line="Notes on what I am building"
+        sub={`${count} ${count === 1 ? "note" : "notes"}`}
+      />
+    ) : (
+      <Card line="Nothing published yet" />
     ),
     { ...CARD_SIZE, fonts }
   );

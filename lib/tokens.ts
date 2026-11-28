@@ -39,13 +39,6 @@ export const palette = {
  * hand-picked shades, which is what guarantees the steps stay a single ramp --
  * change `palette.blue` and the whole grid follows it, evenly spaced, with
  * nothing to re-tune.
- *
- * It is exported for the share cards, which need the same color at zero. A
- * gradient that ends at the `transparent` keyword is a gradient that ends at
- * transparent *black*, and every renderer that interpolates without
- * premultiplying drags the middle of it down toward gray -- which is what a
- * hairline fading out must not do. Ending on `fade(color, 0)` keeps the whole
- * ramp on one hue. See `lib/ogCard.tsx`.
  */
 export function fade(hex: string, opacity: number): string {
   const value = Number.parseInt(hex.slice(1), 16);

@@ -216,7 +216,9 @@ both loaded through `next/font/local` so there is no third-party request.
 - **Ioskeley Mono** sets the whole page. `body` fixes the one text size the site
   has: 14px/1.625.
 - **Geist Pixel Square** (`font-pixel`) sets exactly one string: the name in the
-  header. It is a display face — do not use it for anything else.
+  header. It is a display face — do not use it for anything else on the page.
+  The share cards are the one place outside the page it appears: it sets each
+  card's line, which is that card's name for its page.
 
 There are exactly three sizes — one step below the body size and one above —
 and, like the colors, they are named rather than written out:
@@ -294,44 +296,55 @@ beside the others, and a `:root[data-…]` rule for its value to land in.
 
 ## Share cards
 
-A card is the top of the page it stands for, drawn at card scale. Same frame —
-the hairline across the top, the rule down the left margin with `home` and
-`blog` hanging off it and the open one in blue — and the same corner saying
-where the site is written from. What changes between one card and the next is
-only the block in the middle. `lib/ogCard.tsx` draws everything except that
-block; each `opengraph-image.tsx` supplies it and nothing else.
+A card is one line typed at a prompt. The page's name — `berke kanber`, the
+blog's line, a post's title — set large and lowercase in the pixel face, the
+way the header sets the name, with a blue block cursor
+after its last word; under it, faint and behind a blue `›`, the one fact that
+goes with it: the role, the note count, the date and reading time. The hairline
+across the top and `berkekanber.com` in the top-right corner are the whole of
+the frame. `lib/ogCard.tsx` draws it and takes two strings; each
+`opengraph-image.tsx` supplies those two and nothing else.
 
-There are three, and there is one per page for a reason: the frame names the
-open page, so a page borrowing another page's card would be a frame that lies.
-Add a page, add its card beside it.
+It keeps the site's material and drops its furniture. Paper, the two inks, both
+faces, the top hairline, and blue spent on exactly two things — the cursor
+and the prompt mark. No gutter, no nav, no photograph, no corner location. A
+card is read as a thumbnail for as long as it takes to scroll past it, so it
+says what the page is and stops.
 
-Two things do not carry over from the page. The clock under the location is live
-there and would be frozen here, so the corner keeps the place and drops the
-hour. And the type is bigger: a page is read at arm's length, a card is read as
-a thumbnail in a feed, and being legible at 500px wide is the one thing a card
-is allowed to disagree with the page about.
+There is one card per page, because the line is the page's own: a page
+borrowing another page's card would name the wrong thing. Add a page, add its
+card beside it.
+
+The type is bigger than the site's: a page is read at arm's length, a card at
+500px wide in a feed, and being legible there is the one thing a card is allowed
+to disagree with the page about.
 
 ### What it took to look like the site
 
 **Satori cannot open a `woff2`.** That is the whole reason the old cards were
 set in a stray sans. `app/fonts/*-card.ttf` are the same two faces decompressed
-and cut down to Latin-1, Latin Extended-A and general punctuation — 53KB for the
-pair instead of 2MB. A post whose title reaches outside that range comes out
-blank and needs the subset widened.
+and cut down to Latin-1, Latin Extended-A and general punctuation, with the
+hinting stripped — 59KB for the pair instead of 2MB. Both faces are cut to the
+same ranges: a post title is set in the pixel face, and a glyph missing from it
+is quietly drawn in the mono instead, so a dash or a curly quote in a title comes
+out in the wrong face rather than failing. A post whose title reaches outside
+that range comes out blank and needs the subset widened.
 
 Three more things that are easy to undo:
 
-- **A gradient must not end on `transparent`.** That keyword is transparent
-  _black_, and Satori interpolates without premultiplying, so the fading half of
-  the gutter rule came out gray and darker than the rule above it. It ends on
-  `fade(tokens.rule, 0)` — the same color at zero — which is why `fade` is
-  exported from `lib/tokens.ts` now.
+- **The cursor is a word.** Satori has no `inline-block`, and a cursor beside a
+  wrapped text box stands beside the whole block. So the line is split into one
+  box per word in a wrapping flex row, each word but the last carrying its own
+  no-break space — the pixel face is not monospaced, so the gap has to be its
+  own space rather than a measured one — and the cursor sits inside the last
+  word's box, so it follows a long title down to whichever line its last word
+  lands on and can never wrap onto a line of its own. A single word wider than
+  the column would overflow rather than break.
 - **`metadata.openGraph.images` is not set anywhere.** An explicitly named image
   is inherited whole by every segment under it, so naming the home page's card
-  in the layout would put the photograph and a gutter pointing at `home` on the
-  blog. Left unset, Next fills the field per segment from the
-  `opengraph-image.tsx` beside that segment's page, and hashes each URL so a
-  redrawn card is not served from a scraper's cache.
+  in the layout would put the name on every post. Left unset, Next fills the
+  field per segment from the `opengraph-image.tsx` beside that segment's page,
+  and hashes each URL so a redrawn card is not served from a scraper's cache.
 - **A box holding two JSX children must declare a display.** `{n} min read` is
   two children. Every interpolated label here is written as one template string.
 
