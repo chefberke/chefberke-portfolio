@@ -478,6 +478,30 @@ arrives as one `.block-in`. The stagger numbers siblings up to sixteen and a pos
 is longer than that, so a staggered body would land out of order — and a page
 that is in place inside a second is the rule the stagger exists to serve.
 
+## Search and sharing
+
+Every page names its own title, description, canonical URL and share tags; the
+root layout holds the home page's. Three things keep them honest:
+
+- **A page that sets `openGraph`, `twitter` or `alternates` replaces the
+  layout's whole object.** Next merges metadata key by key, not field by field.
+  So the parts that are about the site rather than the page — the site name,
+  the locale, the X handle, the feed link — live once in `lib/site.ts` and every
+  route spreads them in. A field set only in the layout is a field missing from
+  every post.
+- **A date is the content's, or there is none.** A post's sitemap entry carries
+  its own date, the blog's carries the newest post's, and the home page carries
+  none — the only date it could give is the build's, and a page stamped as
+  changed on every deploy teaches a crawler to ignore the true dates too. The
+  feed follows the same rule.
+- **A post names its author in place.** `lib/jsonLd.ts` publishes `#person` on
+  the home page, but Google reads one page at a time and does not follow an
+  `@id` across pages, so `lib/postJsonLd.ts` writes the name and URL beside it.
+
+`app/feed.xml/route.ts` is the blog as RSS: title, description and date per
+note, never the body. Drafts are out of it for the same reason they are out of
+the sitemap.
+
 ## Contributions graph
 
 `lib/github.ts` scrapes `github.com/users/<login>/contributions`, the same public
@@ -511,8 +535,9 @@ no request.
 Three things follow from it, and each one is a line somewhere:
 
 - **A metadata route must say `dynamic = "force-static"`.** `app/icon.tsx`,
-  `app/robots.ts`, `app/sitemap.ts` and all three `opengraph-image.tsx` carry it.
-  Without it the route is compiled as a handler and the export stops on it.
+  `app/robots.ts`, `app/sitemap.ts`, `app/feed.xml/route.ts` and all three
+  `opengraph-image.tsx` carry it. Without it the route is compiled as a handler
+  and the export stops on it.
 - **`next/image` is `unoptimized`.** There is no optimizer at the other end, and
   there never was one — the Cloudflare deploy has been serving `/_next/image`
   the source bytes for as long as it has existed. The component still measures

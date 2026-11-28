@@ -1,18 +1,28 @@
+import profile from "@/data/profile.json";
 import { SITE_URL } from "@/lib/site";
 import type { PostMeta } from "@/lib/posts";
 
 /**
  * The structured data for one post.
  *
- * It describes only the post. The author and the site are not described again
- * -- they are pointed at, by the two ids `lib/jsonLd.ts` already publishes on
- * the home page, which is the whole reason those ids are stable. A crawler that
- * has read either page knows who `#person` is.
+ * It describes the post, and points at the site by the id `lib/jsonLd.ts`
+ * publishes on the home page. The author is the one thing it also names in
+ * place: Google reads a post's structured data one page at a time and does not
+ * follow an `@id` to another page, so an author given only as `#person` is an
+ * article with no author's name on it. The id stays beside the name, so a
+ * crawler that has read both pages still knows the two are the same person.
  *
  * Every field comes from the same `PostMeta` the page renders. Structured data
  * that disagrees with the page it sits on is worse than none, and one source is
  * the only way to keep them in step.
  */
+const author = {
+  "@type": "Person",
+  "@id": `${SITE_URL}/#person`,
+  name: profile.name,
+  url: SITE_URL,
+};
+
 export function postJsonLd(meta: PostMeta) {
   const url = `${SITE_URL}/blog/${meta.slug}`;
 
@@ -31,8 +41,8 @@ export function postJsonLd(meta: PostMeta) {
     wordCount: meta.wordCount,
     inLanguage: "en",
     image: `${url}/opengraph-image`,
-    author: { "@id": `${SITE_URL}/#person` },
-    publisher: { "@id": `${SITE_URL}/#person` },
+    author,
+    publisher: author,
     isPartOf: { "@id": `${SITE_URL}/#website` },
   };
 }

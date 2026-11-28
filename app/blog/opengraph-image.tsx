@@ -3,6 +3,7 @@ import { Card, CARD_SIZE, cardFonts } from "@/lib/ogCard";
 import { getPostList } from "@/lib/posts";
 
 export const size = CARD_SIZE;
+export const alt = "Notes on what I am building, by Berke Kanber";
 // Written as a file, not answered as a route: `output: "export"` draws a
 // metadata route at build time only if the route says it is static.
 export const dynamic = "force-static";

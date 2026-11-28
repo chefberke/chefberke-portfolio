@@ -24,6 +24,9 @@ export function generateStaticParams() {
 }
 
 export const size = CARD_SIZE;
+// One string for every post: Next reads `alt` as a constant, and a per-post
+// one would mean `generateImageMetadata`, which moves every card to a new URL.
+export const alt = "A note by Berke Kanber";
 // Written as a file, not answered as a route: `output: "export"` draws a
 // metadata route at build time only if the route says it is static.
 export const dynamic = "force-static";

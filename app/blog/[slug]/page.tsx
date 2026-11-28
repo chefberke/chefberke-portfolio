@@ -7,6 +7,12 @@ import { markdownToHast } from "@/lib/markdown";
 import { getPost, getPostSlugs } from "@/lib/posts";
 import { safeJson } from "@/lib/jsonLd";
 import { postJsonLd } from "@/lib/postJsonLd";
+import {
+  FEED_ALTERNATE,
+  OPEN_GRAPH_BASE,
+  SITE_URL,
+  TWITTER_BASE,
+} from "@/lib/site";
 
 /**
  * One post.
@@ -46,17 +52,19 @@ export async function generateMetadata({
     // so the bare title is what belongs here.
     title,
     description,
-    alternates: { canonical: url },
+    alternates: { canonical: url, types: FEED_ALTERNATE },
     openGraph: {
+      ...OPEN_GRAPH_BASE,
       type: "article",
       url,
       title,
       description,
       publishedTime: date,
+      authors: [SITE_URL],
       // The card is not named here. `opengraph-image.tsx` sits beside this file
       // and Next fills it in, hash and all.
     },
-    twitter: { card: "summary_large_image", title, description },
+    twitter: { ...TWITTER_BASE, title, description },
   };
 }
 
