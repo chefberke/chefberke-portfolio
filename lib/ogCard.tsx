@@ -1,74 +1,59 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
-import { fade, tokens } from "@/lib/tokens";
-import { STAR_PATH } from "@/components/shared/Star";
-import profile from "@/data/profile.json";
+import { tokens } from "@/lib/tokens";
 
 /**
- * The share card: the top of a page of this site, drawn at card scale.
+ * The share card: one line typed at a prompt.
  *
- * Everything a card is allowed to say is already said by the page it stands
- * for, so this file builds the page's own frame rather than a picture beside
- * it -- the hairline across the top, the rule down the left margin with the two
- * page names hanging off it, the open one in blue, and the corner that answers
- * where the site is written from. What changes between one card and the next is
- * only the block in the middle.
+ * A card is read as a thumbnail in a feed, for about as long as it takes to
+ * scroll past it, so it says one thing -- what the page is -- and the one fact
+ * under it. Everything else the page has is left to the page. What is kept of
+ * the site is its material: the hairline across the top, the paper, the two
+ * inks, the two faces, and blue as the only saturated thing, spent here on the
+ * cursor and the prompt mark beside the line under it.
  *
- * Two things are deliberately not carried over. The clock under the location is
- * live on the page and would be frozen at build time here, so the corner keeps
- * the place and drops the hour. And the type is bigger than the site's: a page
- * is read at arm's length and a card is read as a thumbnail in a feed, so the
- * one thing a card has to do -- be legible at 500px wide -- is the one place it
- * is allowed to disagree with the page.
+ * The cursor is what makes it a prompt rather than a caption. It stands after
+ * the last word, wherever the line wraps, so a long title and a short name both
+ * end on it. A single word longer than the column would overflow rather than
+ * break -- the words are boxes -- which no title here comes near.
+ *
+ * Every card is the same frame with two strings in it, and each
+ * `opengraph-image.tsx` supplies only those two.
  */
 
 export const CARD_SIZE = { width: 1200, height: 630 };
 
 /**
- * The card's own measurements, all of them in px, since a card has no reader
- * to move `--type-scale` for and nothing on it can reflow.
- *
- * They are one scale of the page: the site's 1px hairline is 2px here and its
- * 12px micro label is 26px, which is the ratio between a 14px column and a
- * card read at half size. The name is the exception, and `Card` says why.
+ * The card's measurements, in px: a card has no reader to move `--type-scale`
+ * for and nothing on it reflows. The site's 1px hairline is 2px here and its
+ * 12px micro label is 26px -- the ratio between a 14px column and a card read
+ * at half size.
  */
 const RULE = 2;
-/** Left edge of the gutter rule. The page names hang to the left of it. */
-const GUTTER_X = 150;
-/** Where the column starts, measured from the same rule the page measures from. */
-const COLUMN_X = 224;
-const COLUMN_RIGHT = 96;
-const TOP = 92;
-const BOTTOM = 80;
-/** One row of the gutter nav, and so also the height of the open-page tick. */
-const NAV_ROW = 44;
-/** Top of the nav, set so its first name sits on the same line as the corner. */
-const NAV_TOP = TOP - (NAV_ROW - 34) / 2;
-
-export const MICRO = {
-  fontSize: 26,
-  letterSpacing: "1.3px",
-  textTransform: "uppercase",
-  color: tokens.faint,
-} as const;
-
-/** The pages, in the order the gutter draws them. Mirrors `SiteNav`. */
-const PAGES = ["home", "blog"] as const;
-export type CardPage = (typeof PAGES)[number];
+const EDGE = 100;
+const LINE = 76;
+const SUB = 30;
+const MICRO = 26;
+/** The cursor is a block one character wide and one line tall. */
+const CURSOR = { width: 36, height: 72 };
+/** Space between the last word and the cursor: tighter than a word space. */
+const CURSOR_GAP = 14;
 
 /**
- * The two faces, as TrueType.
+ * The two faces, as TrueType: the pixel face for the line, the mono for
+ * everything else -- the same split the site's header makes between the name
+ * and the words around it.
  *
- * The site loads both as `woff2`, which is what a browser wants and the one
- * thing Satori cannot open -- so the card used to render in whatever sans the
- * renderer had lying around, which is why it never looked like this site. These
- * are the same two files decompressed and then cut down to Latin-1, Latin
- * Extended-A and general punctuation: enough for English and Turkish, and 53KB
- * for the pair instead of 2MB. A post whose title reaches outside that range is
- * the one thing that would come out blank, and would need the subset widened.
+ * The site loads both as `woff2`, which is the one thing Satori cannot open.
+ * These are the same files decompressed and cut down to the same ranges --
+ * Latin-1, Latin Extended-A and general punctuation -- with the hinting
+ * stripped: enough for English and Turkish at a fraction of the size. The two
+ * must stay cut alike, because a glyph missing from the pixel face is drawn in
+ * the mono instead. A post whose title reaches outside that range is the one
+ * thing that would come out blank, and would need the subset widened.
  *
- * Read from disk rather than imported, because both card routes are rendered at
- * build time -- the same place `lib/posts.ts` reads `content/posts`.
+ * Read from disk rather than imported, because every card is rendered at build
+ * time -- the same place `lib/posts.ts` reads `content/posts`.
  */
 let fontsPromise: Promise<
   { name: string; data: Buffer; weight: 400; style: "normal" }[]
@@ -87,36 +72,15 @@ export function cardFonts() {
 }
 
 /**
- * The one photograph on the site, inlined.
+ * The frame, with the page's line and the fact under it.
  *
- * Satori has no network and no filesystem, so the file is read here and handed
- * over as a data URI. It is 72KB, which is a string built once at build time
- * and never shipped to anyone.
+ * Both are lowercased here rather than by the caller, since a prompt is typed
+ * and the case is part of the frame, not of the content. `sub` is one string:
+ * Satori counts JSX children, and a box holding two of them has to declare a
+ * display, so every label that interpolates is written as one template string.
  */
-export async function cardPhoto() {
-  const file = await readFile(
-    join(process.cwd(), "public/images/chefberke.jpg")
-  );
-
-  return `data:image/jpeg;base64,${file.toString("base64")}`;
-}
-
-/**
- * The frame every card is drawn inside, with the page's own block passed in.
- *
- * `children` is the middle of the column and nothing else -- it is centered in
- * the space left between the corner at the top and the signature at the bottom,
- * so a two-line post title and a one-line name both sit on the card's optical
- * center without either card having to know the other's height.
- */
-export function Card({
-  page,
-  children,
-}: {
-  page: CardPage;
-  children: React.ReactNode;
-}) {
-  const openIndex = PAGES.indexOf(page);
+export function Card({ line, sub }: { line: string; sub?: string }) {
+  const words = line.trim().split(/\s+/);
 
   return (
     <div
@@ -142,111 +106,88 @@ export function Card({
         }}
       />
 
-      {/* The gutter rule: where the column is measured from. It runs 64% of the
-          height and is already fading at 45% of that, the same numbers
-          `.gutter-rule` uses, so it reads as a margin ruled by hand rather than
-          as a border drawn around a panel.
-
-          The last stop is the rule's own color at zero and not the keyword
-          `transparent`, which is transparent black -- Satori interpolates
-          without premultiplying, so that spelling turns the middle of this
-          hairline gray and draws it darker than the rule at the top of the
-          card. */}
+      {/* The address, where a browser would show it. */}
       <div
         style={{
           position: "absolute",
-          top: 0,
-          left: GUTTER_X,
-          width: RULE,
-          height: Math.round(CARD_SIZE.height * 0.64),
-          backgroundImage: `linear-gradient(to bottom, ${tokens.rule} 0%, ${
-            tokens.rule
-          } 45%, ${fade(tokens.rule, 0)} 100%)`,
-        }}
-      />
-
-      {/* The tick beside the open page name, just inside the rule. It is the
-          only reason this card carries a nav at all: it puts the site's one
-          saturated color on the one thing it means everywhere else -- where you
-          are and what you can act on. */}
-      <div
-        style={{
-          position: "absolute",
-          left: GUTTER_X - 8 - RULE * 2,
-          top: NAV_TOP + openIndex * NAV_ROW,
-          width: RULE * 2,
-          height: NAV_ROW,
-          backgroundColor: tokens.link,
-        }}
-      />
-
-      {/* The page names, hung off the rule and right-aligned against it. */}
-      <div
-        style={{
-          position: "absolute",
-          left: 0,
-          top: NAV_TOP,
-          width: GUTTER_X - 28,
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "flex-end",
+          top: 64,
+          right: EDGE,
+          fontSize: MICRO,
+          letterSpacing: "1.3px",
+          textTransform: "uppercase",
+          color: tokens.faint,
         }}
       >
-        {PAGES.map((name) => (
-          <div
-            key={name}
-            style={{
-              ...MICRO,
-              display: "flex",
-              alignItems: "center",
-              height: NAV_ROW,
-              color: name === page ? tokens.link : tokens.faint,
-            }}
-          >
-            {name}
-          </div>
-        ))}
+        berkekanber.com
       </div>
 
-      {/* The column. Three bands: the corner, the block, the signature. */}
+      {/* The prompt, on the card's vertical center. */}
       <div
         style={{
           position: "absolute",
-          left: COLUMN_X,
-          top: TOP,
-          width: CARD_SIZE.width - COLUMN_X - COLUMN_RIGHT,
-          height: CARD_SIZE.height - TOP - BOTTOM,
+          left: EDGE,
+          right: EDGE,
+          top: 0,
+          bottom: 0,
           display: "flex",
           flexDirection: "column",
+          justifyContent: "center",
         }}
       >
-        {/* Where the page is written from. It stands opposite the open page
-            name in the gutter, so the top of the card is the same line read
-            across that the top of every page here is. */}
-        <div style={{ display: "flex", justifyContent: "flex-end" }}>
-          <div style={MICRO}>{profile.location}</div>
-        </div>
-
+        {/* One box per word in a wrapping row, the cursor inside the last one.
+            Satori has no inline-block, and a cursor beside a wrapped text box
+            would stand beside the whole block -- inside the last word's box it
+            follows that word down to whichever line it lands on, and cannot be
+            wrapped onto a line of its own. Each word but the last carries its
+            own no-break space, so the gap is the face's own word space. */}
         <div
           style={{
-            flex: 1,
             display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
+            flexWrap: "wrap",
+            alignItems: "center",
+            fontFamily: "Geist Pixel",
+            fontSize: LINE,
+            lineHeight: 1.2,
+            letterSpacing: "-1.5px",
+            textTransform: "lowercase",
           }}
         >
-          {children}
+          {words.map((word, i) =>
+            i < words.length - 1 ? (
+              <div key={i} style={{ display: "flex" }}>
+                {`${word}\u00a0`}
+              </div>
+            ) : (
+              <div key={i} style={{ display: "flex", alignItems: "center" }}>
+                <div style={{ display: "flex" }}>{word}</div>
+                <div
+                  style={{
+                    width: CURSOR.width,
+                    height: CURSOR.height,
+                    marginLeft: CURSOR_GAP,
+                    backgroundColor: tokens.link,
+                  }}
+                />
+              </div>
+            )
+          )}
         </div>
 
-        {/* The signature: the site's one drawn mark, and the address. The star
-            is the favicon's shape at the favicon's color, so a tab and a card
-            are recognisably the same thing. */}
-        <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill={tokens.link}>
-            <path d={STAR_PATH} />
-          </svg>
-          <div style={MICRO}>berkekanber.com</div>
-        </div>
+        {sub ? (
+          <div
+            style={{
+              display: "flex",
+              marginTop: 22,
+              fontSize: SUB,
+              letterSpacing: "0.5px",
+              textTransform: "lowercase",
+              color: tokens.faint,
+            }}
+          >
+            <span style={{ color: tokens.link, marginRight: 18 }}>›</span>
+            <span>{sub}</span>
+          </div>
+        ) : null}
       </div>
     </div>
   );

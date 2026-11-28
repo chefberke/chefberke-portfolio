@@ -1,10 +1,10 @@
 import { ImageResponse } from "next/og";
 import { formatPostDate, getPost, getPostSlugs } from "@/lib/posts";
-import { tokens } from "@/lib/tokens";
-import { Card, CARD_SIZE, MICRO, cardFonts } from "@/lib/ogCard";
+import { Card, CARD_SIZE, cardFonts } from "@/lib/ogCard";
 
 /**
- * The card for one post: the top of that post, in the site's frame.
+ * The card for one post: its title at the prompt, the date and reading time
+ * under it.
  *
  * `generateStaticParams` is exported from this file rather than inherited from
  * the page beside it, and it is what makes the difference between a set of PNGs
@@ -39,39 +39,16 @@ export default async function PostOpenGraphImage({
   const fonts = await cardFonts();
 
   return new ImageResponse(
-    (
-      // The gutter says `blog` in blue, which is the same thing the label above
-      // a post title says on the page -- so the column here opens on the title
-      // itself rather than repeating the word two inches to its right.
-      <Card page="blog">
-        {/* A title is as long as it is. It wraps rather than being cut, since
-            half a sentence on a card is worse than a small one, and it is set
-            at the page's own body color and case. `display: flex` is Satori's
-            requirement for a box whose text has to wrap. */}
-        <div
-          style={{
-            display: "flex",
-            fontSize: 52,
-            lineHeight: 1.25,
-            color: tokens.primary,
-          }}
-        >
-          {post?.meta.title ?? "Notes on what I am building."}
-        </div>
-
-        {/* What is known about it, in the one line the page sets it on: the
-            date and the reading time, both micro labels, neither qualified. */}
-        {post ? (
-          <div style={{ display: "flex", gap: 34, marginTop: 34 }}>
-            <div style={MICRO}>{formatPostDate(post.meta.date)}</div>
-            {/* One string, not a number beside a word: Satori counts JSX
-                children, and a box holding two of them has to declare a
-                display. */}
-            <div style={MICRO}>{`${post.meta.readingMinutes} min read`}</div>
-          </div>
-        ) : null}
-      </Card>
-    ),
+    // A title is as long as it is: it wraps rather than being cut, and the
+    // cursor follows it down to the last word.
+    <Card
+      line={post?.meta.title ?? "Notes on what I am building"}
+      sub={
+        post
+          ? `${formatPostDate(post.meta.date)} · ${post.meta.readingMinutes} min read`
+          : undefined
+      }
+    />,
     { ...CARD_SIZE, fonts }
   );
 }
